@@ -9,7 +9,7 @@
     {
       "name": "scrapling",
       "description": "Web scraping, website cloning, and content extraction with the Scrapling library",
-      "version": "2026.3.0",
+      "version": "2026.3.1",
       "source": "./plugins/scrapling",
       "category": "development"
     },
