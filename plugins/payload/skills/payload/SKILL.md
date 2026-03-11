@@ -43,6 +43,8 @@ Payload is a Next.js native CMS with TypeScript-first architecture, providing ad
 | Safe migrations          | Never `migrate:fresh`, always back up     | [PAYLOAD-GOTCHAS.md#database-migration-safety](reference/PAYLOAD-GOTCHAS.md#database-migration-safety)                           |
 | Bulk media import        | Direct DB inserts, skip upload API        | [PAYLOAD-GOTCHAS.md#bulk-media-import-never-use-payloads-upload-api](reference/PAYLOAD-GOTCHAS.md#bulk-media-import-never-use-payloads-upload-api) |
 | Grid view for uploads    | `folders: true` + `folders: {}` in config | [PAYLOAD-GOTCHAS.md#folders-feature-payload-v3-experimental](reference/PAYLOAD-GOTCHAS.md#folders-feature-payload-v3-experimental) |
+| Tailwind v4 broken       | Use Tailwind v3 (webpack splits v4 CSS)   | [PAYLOAD-GOTCHAS.md#tailwind-css-v4-does-not-work-with-nextjs--payload](reference/PAYLOAD-GOTCHAS.md#tailwind-css-v4-does-not-work-with-nextjs--payload) |
+| `status` field conflicts  | Rename to avoid drafts `_status` clash   | [PAYLOAD-GOTCHAS.md#reserved-field-names-with-drafts-enabled](reference/PAYLOAD-GOTCHAS.md#reserved-field-names-with-drafts-enabled) |
 
 ## Quick Start
 

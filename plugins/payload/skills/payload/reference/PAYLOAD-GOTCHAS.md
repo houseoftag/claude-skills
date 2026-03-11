@@ -76,6 +76,112 @@ When upgrading Payload, re-copy `payload-styles.css` from the new version's `nod
 
 ---
 
+## Tailwind CSS v4 Does NOT Work with Next.js + Payload
+
+### The Problem
+Tailwind CSS v4 utility classes are never generated when used in a Payload CMS + Next.js project. The `@theme` block and `@source` directives appear as raw unprocessed CSS in the browser. The page renders completely unstyled — no backgrounds, no spacing, no colors.
+
+### Why It Happens
+Tailwind v4 uses `@import "tailwindcss"` which gets resolved by Next.js's webpack CSS pipeline. Webpack splits CSS imports into separate modules and processes each independently through PostCSS. The sequence:
+
+1. Webpack sees `@import "tailwindcss"` in your `styles.css`
+2. It resolves this to `node_modules/tailwindcss/index.css` and extracts it as a **separate CSS chunk**
+3. `@tailwindcss/postcss` processes that chunk — generating the theme layer, base resets, and preflight
+4. Your remaining CSS (with `@theme`, `@source`, and utility class references) is processed as a **second chunk**
+5. Since the second chunk doesn't contain `@import "tailwindcss"`, `@tailwindcss/postcss` doesn't activate for it
+6. Result: theme variables are defined (from chunk 1) but **zero utility classes are generated** because the scanner never ran against your source files
+
+The `source()` parameter (`@import "tailwindcss" source("../../")`) doesn't help — webpack still splits the import before PostCSS can process it as a unit. The `@source` directive also doesn't help for the same reason.
+
+### The Fix: Use Tailwind CSS v3
+Tailwind v3 uses `@tailwind base; @tailwind components; @tailwind utilities;` directives which webpack does NOT split. They remain in the CSS file and are processed by the `tailwindcss` PostCSS plugin in-place.
+
+```bash
+# Remove v4
+pnpm remove tailwindcss @tailwindcss/postcss
+
+# Install v3
+pnpm add -D tailwindcss@3 postcss autoprefixer
+```
+
+**postcss.config.mjs:**
+```js
+const config = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+export default config
+```
+
+**tailwind.config.ts:**
+```ts
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: [
+    './src/app/(frontend)/**/*.{ts,tsx}',
+    './src/components/**/*.{ts,tsx}',
+  ],
+  theme: {
+    extend: {
+      // your custom colors, fonts, etc.
+    },
+  },
+  plugins: [],
+}
+export default config
+```
+
+**styles.css:**
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your custom CSS here */
+```
+
+### How to Diagnose
+If you suspect this issue, check the compiled CSS in the browser:
+```bash
+# Get the CSS URL from the page source
+curl -s http://localhost:3000 | grep -o 'href="[^"]*\.css[^"]*"'
+
+# Check if utility classes exist
+curl -s "<css-url>" | grep "\.bg-" | head -5
+```
+
+If you see theme variables defined but zero utility classes (no `.bg-*`, `.text-*`, `.flex`, etc.), this is the webpack splitting issue. Switch to Tailwind v3.
+
+### When This Might Be Fixed
+This is fundamentally a webpack issue. If Next.js switches to a different CSS bundling approach (or if `@tailwindcss/postcss` adds a mode that doesn't depend on `@import` detection), v4 may work in the future. Until then, **always use Tailwind v3 with Payload + Next.js projects**.
+
+---
+
+## Reserved Field Names with Drafts Enabled
+
+### The Problem
+When `versions: { drafts: true }` is enabled on a collection, Payload reserves the field name `status` internally (mapped to `_status` in the database with enum values `draft`/`published`). If you create your own field named `status`, the database enum gets created with Payload's values instead of yours, causing query failures.
+
+### Example Error
+```
+Failed query: select count(*) from "events" where "events"."status" = $1 params: upcoming
+```
+
+### The Fix
+Never name a field `status` on collections with drafts enabled. Use a more specific name:
+```ts
+// WRONG — conflicts with Payload's internal _status field
+{ name: 'status', type: 'select', options: ['upcoming', 'past', 'cancelled'] }
+
+// CORRECT — no conflict
+{ name: 'eventStatus', type: 'select', options: ['upcoming', 'past', 'cancelled'] }
+```
+
+---
+
 ## Database Migration Safety
 
 ### NEVER Use `migrate:fresh`
