@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: auto-bump CalVer (YYYY.M.patch) for changed plugins.
+#
+# Detects which plugins/ directories have staged changes, bumps the version
+# in plugin.json and marketplace.json, and re-stages the bumped files.
+#
+# Format: YYYY.M.patch (patch resets to 1 each month, increments within month)
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+MARKETPLACE="$REPO_ROOT/.claude-plugin/marketplace.json"
+YEAR_MONTH="$(date +%Y.%-m)"
+
+# Find which plugins have staged changes (excluding the manifest files themselves)
+changed_plugins=()
+for plugin_dir in "$REPO_ROOT"/plugins/*/; do
+    plugin_name="$(basename "$plugin_dir")"
+    # Check if any staged files are under this plugin dir (excluding plugin.json)
+    if git diff --cached --name-only | grep -q "^plugins/$plugin_name/" && \
+       ! git diff --cached --name-only -- "plugins/$plugin_name/" | grep -qx "plugins/$plugin_name/.claude-plugin/plugin.json"; then
+        changed_plugins+=("$plugin_name")
+    fi
+done
+
+if [ ${#changed_plugins[@]} -eq 0 ]; then
+    exit 0
+fi
+
+# Bump version for each changed plugin
+for plugin_name in "${changed_plugins[@]}"; do
+    plugin_json="$REPO_ROOT/plugins/$plugin_name/.claude-plugin/plugin.json"
+
+    if [ ! -f "$plugin_json" ]; then
+        continue
+    fi
+
+    # Read current version
+    current_version="$(python3 -c "
+import json, sys
+with open('$plugin_json') as f:
+    print(json.load(f)['version'])
+")"
+
+    # Calculate new version
+    new_version="$(python3 -c "
+import sys
+current = '$current_version'
+year_month = '$YEAR_MONTH'
+
+parts = current.split('.')
+# Check if current version is in same YYYY.M prefix
+if len(parts) == 3:
+    current_prefix = parts[0] + '.' + parts[1]
+    if current_prefix == year_month:
+        patch = int(parts[2]) + 1
+    else:
+        patch = 1
+else:
+    patch = 1
+
+print(f'{year_month}.{patch}')
+")"
+
+    # Update plugin.json
+    python3 -c "
+import json
+with open('$plugin_json', 'r') as f:
+    data = json.load(f)
+data['version'] = '$new_version'
+with open('$plugin_json', 'w') as f:
+    json.dump(data, f, indent=2)
+    f.write('\n')
+"
+
+    # Update marketplace.json
+    python3 -c "
+import json
+with open('$MARKETPLACE', 'r') as f:
+    data = json.load(f)
+for plugin in data['plugins']:
+    if plugin['name'] == '$plugin_name':
+        plugin['version'] = '$new_version'
+        break
+with open('$MARKETPLACE', 'w') as f:
+    json.dump(data, f, indent=2)
+    f.write('\n')
+"
+
+    # Re-stage the bumped files
+    git add "$plugin_json" "$MARKETPLACE"
+
+    echo "[$plugin_name] version bumped: $current_version → $new_version"
+done
