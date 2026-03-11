@@ -1,9 +1,11 @@
 {
   "name": "railway",
-  "version": "2026.3.0",
+  "version": "2026.3.1",
   "description": "Use when running Railway CLI commands, deploying to Railway, managing Railway services/volumes/variables/domains, or troubleshooting Railway deployments. Triggers on: railway, railway CLI, deploy to Railway, railway volume, railway variables, railway ssh, railway logs, railway domain.",
   "author": {
     "name": "Tag Vinzant"
   },
-  "keywords": ["railway"]
+  "keywords": [
+    "railway"
+  ]
 }
