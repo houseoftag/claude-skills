@@ -270,6 +270,121 @@ Adds a `payload-folders` system collection and `folder_id` columns. Requires a m
 
 ---
 
+## Seed Scripts: Environment Variables Not Auto-Loaded
+
+### The Problem
+Seed scripts run via `npx tsx src/seed/index.ts` don't load `.env` files. Next.js auto-loads `.env` during `next dev`/`next build`, but standalone TypeScript scripts don't. The Payload config reads `process.env.DATABASE_URL` and gets `undefined`, causing Payload to connect to the wrong database or fail entirely.
+
+### Symptoms
+```
+DrizzleQueryError: database "your-username" does not exist
+```
+Payload falls back to the system user's default database name when `DATABASE_URL` is undefined.
+
+### The Fix
+Source the `.env` file before running the script:
+```json
+{
+  "scripts": {
+    "seed": "source .env && export DATABASE_URL PAYLOAD_SECRET NEXT_PUBLIC_SERVER_URL && cross-env NODE_OPTIONS=--no-deprecation npx tsx src/seed/index.ts"
+  }
+}
+```
+
+**Approaches that DON'T work:**
+- `--env-file=.env` in `NODE_OPTIONS` — Node rejects it: "not allowed in NODE_OPTIONS"
+- `node --env-file=.env node_modules/.bin/tsx` — tries to parse the shell script as JS
+- `npx tsx --env-file=.env` — tsx doesn't support this flag
+
+---
+
+## Next.js Image Optimizer Fails on Payload Media URLs
+
+### The Problem
+Using Next.js `<Image>` component with Payload's media URLs (`/api/media/file/...`) causes 500 errors. The image optimizer fetches the URL internally but receives an empty buffer.
+
+### Error
+```
+⨯ The requested resource isn't a valid image for /api/media/file/photo.jpg received null
+[Error: Input Buffer is empty]
+```
+
+### Why It Happens
+Next.js's image optimizer makes an internal HTTP request to fetch the source image. When fetching from Payload's own API route within the same server, the response body arrives empty — likely a timing/streaming issue between Next.js's internal request handling and Payload's file serving middleware.
+
+### The Fix
+Use plain `<img>` tags for Payload media instead of Next.js `<Image>`:
+```tsx
+// ❌ BROKEN — image optimizer gets empty buffer
+<Image src={photo.url} alt={photo.alt} width={800} height={600} />
+
+// ✅ WORKS — direct browser request to Payload's file route
+<img
+  src={photo.url}
+  alt={photo.alt}
+  width={photo.width || undefined}
+  height={photo.height || undefined}
+  loading="lazy"
+/>
+```
+
+If you need image optimization, use a cloud storage adapter (S3, Cloudflare R2) with a CDN that handles resizing, or use Payload's built-in `imageSizes` to pre-generate variants.
+
+---
+
+## Frontend API Routes Shadow Payload API Routes
+
+### The Problem
+Creating API routes under the `(frontend)` route group at paths that overlap with Payload's API namespace causes Payload's routes to stop working. For example, `src/app/(frontend)/api/media/[...path]/route.ts` intercepts all requests to `/api/media/*` before they reach Payload's `(payload)/api/[...slug]/route.ts`.
+
+### Why It Happens
+Next.js route groups (`(frontend)`, `(payload)`) are invisible in the URL — both map to `/api/*`. A more specific route like `api/media/[...path]` wins over a generic catch-all like `api/[...slug]`, regardless of which route group it's in.
+
+### The Fix
+Never create API routes under `(frontend)/api/` that overlap with Payload's built-in routes. Payload uses these paths:
+- `/api/<collection-slug>/*` — CRUD for every collection (e.g., `/api/media/*`, `/api/users/*`)
+- `/api/globals/<global-slug>` — globals
+- `/api/graphql` — GraphQL endpoint
+
+If you need custom API routes, either:
+1. Put them under `(payload)/api/` as custom Payload endpoints
+2. Use a different namespace: `(frontend)/api/custom/*` or `(frontend)/api/app/*`
+
+---
+
+## Media staticDir: Use Explicit Paths
+
+### The Problem
+Payload's default `staticDir` for upload collections resolves relative to the process CWD. This can fail when the app is started from a different directory (e.g., PM2, Docker, Railway) or when symlinks change the apparent path.
+
+### The Fix
+Always set `staticDir` explicitly with an absolute path:
+```ts
+export const Media: CollectionConfig = {
+  slug: 'media',
+  upload: {
+    staticDir: path.resolve(process.cwd(), 'media'),
+    // ...
+  },
+}
+```
+
+For Railway or other platforms with persistent volumes, detect the environment:
+```ts
+const isRailway = !!process.env.RAILWAY_ENVIRONMENT
+const mediaDir = isRailway ? '/data/media' : path.resolve(process.cwd(), 'media')
+
+export const Media: CollectionConfig = {
+  slug: 'media',
+  upload: {
+    staticDir: mediaDir,
+    // ...
+  },
+}
+```
+
+---
+
 ## Disaster Recovery
 
 If the database and all uploaded media need to be restored:

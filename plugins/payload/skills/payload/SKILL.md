@@ -1,6 +1,6 @@
 ---
 name: payload
-description: Use when working with Payload CMS projects (payload.config.ts, collections, fields, hooks, access control, Payload API). Use when debugging validation errors, security issues, relationship queries, transactions, or hook behavior. Also use for CSS conflicts between frontend and Payload admin panel, database migration safety (migrate:fresh dangers), bulk media imports, upload collection grid/folder view, and disaster recovery.
+description: Use when working with Payload CMS projects (payload.config.ts, collections, fields, hooks, access control, Payload API). Use when debugging validation errors, security issues, relationship queries, transactions, or hook behavior. Also use for CSS conflicts between frontend and Payload admin panel, database migration safety (migrate:fresh dangers), bulk media imports, upload collection grid/folder view, disaster recovery, seed script env loading, Next.js Image component failures with Payload media, API route shadowing between frontend and Payload route groups, and media staticDir configuration.
 ---
 
 # Payload CMS Application Development
@@ -45,6 +45,10 @@ Payload is a Next.js native CMS with TypeScript-first architecture, providing ad
 | Grid view for uploads    | `folders: true` + `folders: {}` in config | [PAYLOAD-GOTCHAS.md#folders-feature-payload-v3-experimental](reference/PAYLOAD-GOTCHAS.md#folders-feature-payload-v3-experimental) |
 | Tailwind v4 broken       | Use Tailwind v3 (webpack splits v4 CSS)   | [PAYLOAD-GOTCHAS.md#tailwind-css-v4-does-not-work-with-nextjs--payload](reference/PAYLOAD-GOTCHAS.md#tailwind-css-v4-does-not-work-with-nextjs--payload) |
 | `status` field conflicts  | Rename to avoid drafts `_status` clash   | [PAYLOAD-GOTCHAS.md#reserved-field-names-with-drafts-enabled](reference/PAYLOAD-GOTCHAS.md#reserved-field-names-with-drafts-enabled) |
+| Seed script no env vars  | `source .env && export` before tsx        | [PAYLOAD-GOTCHAS.md#seed-scripts-environment-variables-not-auto-loaded](reference/PAYLOAD-GOTCHAS.md#seed-scripts-environment-variables-not-auto-loaded) |
+| `<Image>` + Payload 500  | Use `<img>` tags for Payload media        | [PAYLOAD-GOTCHAS.md#nextjs-image-optimizer-fails-on-payload-media-urls](reference/PAYLOAD-GOTCHAS.md#nextjs-image-optimizer-fails-on-payload-media-urls) |
+| API routes shadow Payload | Don't overlap `(frontend)/api/` paths    | [PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes](reference/PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes) |
+| Media files 404           | Set `staticDir` to absolute path         | [PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths](reference/PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths) |
 
 ## Quick Start
 
