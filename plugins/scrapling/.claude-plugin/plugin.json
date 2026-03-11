@@ -1,6 +1,6 @@
 {
   "name": "scrapling",
-  "version": "1.0.0",
+  "version": "2026.3.0",
   "description": "Web scraping, website cloning, and content extraction with the Scrapling library. Covers fetchers, selectors, spiders, screenshots, and multimedia asset downloading.",
   "author": {
     "name": "Tag Vinzant"

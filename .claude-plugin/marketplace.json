@@ -9,14 +9,14 @@
     {
       "name": "scrapling",
       "description": "Web scraping, website cloning, and content extraction with the Scrapling library",
-      "version": "1.0.0",
+      "version": "2026.3.0",
       "source": "./plugins/scrapling",
       "category": "development"
     },
     {
       "name": "payload",
       "description": "Payload CMS: collections, fields, hooks, access control, queries, database adapters, and Railway deployment",
-      "version": "1.0.0",
+      "version": "2026.3.0",
       "source": "./plugins/payload",
       "category": "development"
     }

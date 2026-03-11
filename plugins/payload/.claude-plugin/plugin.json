@@ -1,6 +1,6 @@
 {
   "name": "payload",
-  "version": "1.0.0",
+  "version": "2026.3.0",
   "description": "Payload CMS development and Railway deployment. Covers collections, fields, hooks, access control, queries, database adapters, and production deployment.",
   "author": {
     "name": "Tag Vinzant"
