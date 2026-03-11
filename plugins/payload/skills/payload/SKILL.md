@@ -50,6 +50,10 @@ Payload is a Next.js native CMS with TypeScript-first architecture, providing ad
 | API routes shadow Payload | Don't overlap `(frontend)/api/` paths    | [PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes](reference/PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes) |
 | Media files 404           | Set `staticDir` to absolute path         | [PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths](reference/PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths) |
 
+## Database Adapter: Default to SQLite
+
+**Always use SQLite (`@payloadcms/db-sqlite`) unless the user explicitly requests Postgres or MongoDB.** SQLite runs as a single file on a volume — no separate database server needed. This is the right choice for most sites. Only suggest Postgres/MongoDB if the user mentions high-traffic scaling needs or explicitly asks for them.
+
 ## Quick Start
 
 ```bash
@@ -62,7 +66,7 @@ pnpm dev
 
 ```ts
 import { buildConfig } from 'payload'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -83,8 +87,8 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URL,
+  db: sqliteAdapter({
+    url: process.env.DATABASE_URI,
   }),
 })
 ```

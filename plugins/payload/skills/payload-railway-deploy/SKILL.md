@@ -33,6 +33,8 @@ Railway Service
 
 ### Setup Steps (in order)
 
+For Railway CLI syntax details, see the **railway** skill. The commands below are the Payload-specific sequence:
+
 ```bash
 # 1. Install CLIs
 brew install gh railway
@@ -52,9 +54,9 @@ railway link
 railway volume add --mount-path /data
 
 # 6. Set environment variables
-railway variables set PAYLOAD_SECRET="$(openssl rand -hex 32)"
+railway variable set PAYLOAD_SECRET="$(openssl rand -hex 32)"
 railway domain  # creates the domain, outputs the URL
-railway variables set NEXT_PUBLIC_SERVER_URL="https://<your-domain>.up.railway.app"
+railway variable set NEXT_PUBLIC_SERVER_URL="https://<your-domain>.up.railway.app"
 
 # 7. Push code (triggers first deploy)
 git push
@@ -163,11 +165,7 @@ export async function GET(
 }
 ```
 
-### `[[volumes]]` in railway.toml Causes Silent Failures
-Declaring volumes in `railway.toml` does NOT work. Volumes must be created via CLI (`railway volume add --mount-path /data`) or the dashboard.
-
-### Multiple Deploys Queue on Config Changes
-Setting env vars and adding volumes each trigger a new deploy. You can end up with 5+ queued deploys, most of which fail. Let them fail — only the latest matters.
+For general Railway gotchas (volumes in railway.toml, queued deploys, SSH stdin limitations), see the **railway** skill.
 
 ---
 

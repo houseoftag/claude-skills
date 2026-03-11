@@ -16,8 +16,15 @@
     {
       "name": "payload",
       "description": "Payload CMS: collections, fields, hooks, access control, queries, database adapters, and Railway deployment",
-      "version": "2026.3.0",
+      "version": "2026.3.1",
       "source": "./plugins/payload",
+      "category": "development"
+    },
+    {
+      "name": "railway",
+      "description": "Use when running Railway CLI commands, deploying to Railway, managing Railway services/volumes/variables/domains, or troubleshooting Railway deployments. Triggers on: railway, railway CLI, deploy to Railway, railway volume, railway variables, railway ssh, railway logs, railway domain.",
+      "version": "2026.3.0",
+      "source": "./plugins/railway",
       "category": "development"
     }
   ]

@@ -78,3 +78,4 @@ Use the `skill-creator` plugin to run eval loops — it spawns test agents with 
 |--------|--------|-------------|
 | scrapling | scrapling | Web scraping, website cloning, asset extraction with Scrapling |
 | payload | payload, payload-railway-deploy | Payload CMS development + Railway deployment |
+| railway | railway | Railway CLI command reference and deployment gotchas |
