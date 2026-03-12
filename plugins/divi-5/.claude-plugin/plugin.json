@@ -1,7 +1,7 @@
 {
   "name": "divi-5",
   "version": "2026.3.0",
-  "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API.",
+  "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API, et_pb shortcodes, WP-CLI with Divi content. Always use this skill when writing Divi block content or pushing Divi layouts via WP-CLI — it prevents trial-and-error with attribute names and ensures output is editable in the Visual Builder.",
   "author": {
     "name": "Tag Vinzant"
   },
