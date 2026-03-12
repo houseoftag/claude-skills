@@ -72,11 +72,9 @@ Place `.lsp.json` in your project root or configure globally.
 | `restartOnCrash` | Auto-restart on crash (boolean) |
 | `maxRestarts` | Max restart attempts |
 
-## Premium License
+## License Key
 
-Some features require a license ($35 personal / $75 business): rename, code actions, code lens, inlay hints, go to type definition, find all implementations, type hierarchy.
-
-Activate by creating `$HOME/intelephense/licence.txt` with the key, or pass via:
+Activate your license by creating `$HOME/intelephense/licence.txt` with the key, or pass via `.lsp.json`:
 ```json
 {
   "initializationOptions": {

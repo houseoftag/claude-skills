@@ -44,7 +44,7 @@
     {
       "name": "intelephense",
       "description": "Use when working with PHP files and needing code intelligence \u2014 diagnostics, type checking, go-to-definition, find references, symbol search, hover info, code actions, formatting, rename refactoring. Triggers on: PHP development, PHP LSP, Intelephense, PHP type errors, PHP diagnostics, undefined method, undefined variable, PHP autocompletion, PHP namespace resolution, phpdoc, PHP refactoring.",
-      "version": "2026.3.0",
+      "version": "2026.3.1",
       "source": "./plugins/intelephense",
       "category": "development"
     }

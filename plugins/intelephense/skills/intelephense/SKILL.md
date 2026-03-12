@@ -101,6 +101,6 @@ Common diagnostic codes:
 
 ## Configuration Reference
 
-See `reference/lsp-config.md` for `.lsp.json` setup, stubs, diagnostics settings, premium license activation, and troubleshooting.
+See `reference/lsp-config.md` for `.lsp.json` setup, stubs, diagnostics settings, and troubleshooting.
 
 For WordPress-specific Intelephense configuration (stubs, includePaths, false positives), see the **wordpress** skill's `reference/intelephense-wordpress.md`.
