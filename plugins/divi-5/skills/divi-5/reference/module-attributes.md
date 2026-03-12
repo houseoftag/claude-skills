@@ -40,6 +40,15 @@ Module-specific properties unique to each module. For universal decoration attri
 34. [Gallery](#gallery)
 35. [Sidebar](#sidebar)
 36. [Menu](#menu)
+37. [Link](#link)
+38. [Signup](#signup-email-optin)
+39. [Dropdown](#dropdown)
+40. [Group / Group Carousel](#group--group-carousel)
+41. [Comments](#comments)
+42. [Post Title](#post-title)
+43. [Post Content](#post-content)
+44. [Portfolio](#portfolio)
+45. [Post Navigation](#post-navigation)
 
 ---
 
@@ -1032,4 +1041,179 @@ Renders a WordPress navigation menu.
 <!-- wp:divi/menu {"module":{"advanced":{"menuId":{"desktop":{"value":"2"}}}}} -->
 <!-- /wp:divi/menu -->
 ```
+
+---
+
+## Link
+
+- **Block:** `divi/link`
+- **D4 shortcode:** (new in D5)
+- **Elements:** `module`, `content`, `icon`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `content.innerContent.{device}.value.text` | string | Link text |
+| `content.innerContent.{device}.value.linkUrl` | URL | Link URL |
+| `content.innerContent.{device}.value.linkTarget` | `"_blank"` / `""` | Open in new tab |
+
+### Example
+
+```html
+<!-- wp:divi/link {"content":{"innerContent":{"desktop":{"value":{"text":"Learn More","linkUrl":"https://example.com","linkTarget":"_blank"}}}}} -->
+<!-- /wp:divi/link -->
+```
+
+---
+
+## Signup (Email Optin)
+
+- **Block:** `divi/signup`
+- **D4 shortcode:** `et_pb_signup`
+- **Elements:** `module`, `title`, `content`, `button`
+
+Renders an email signup form. Requires email service provider configuration in Divi settings.
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Form heading |
+| `content.innerContent.{device}.value` | HTML string | Description text |
+
+### Example
+
+```html
+<!-- wp:divi/signup {"title":{"innerContent":{"desktop":{"value":"Subscribe to Our Newsletter"}}},"content":{"innerContent":{"desktop":{"value":"<p>Get the latest updates delivered to your inbox.</p>"}}}} -->
+<!-- /wp:divi/signup -->
+```
+
+---
+
+## Dropdown
+
+- **Block:** `divi/dropdown`
+- **D4 shortcode:** (new in D5)
+- **Element:** `module`
+
+A container module that wraps child blocks in a collapsible dropdown. Functions as a parent — place modules inside it, similar to how section/row/column work.
+
+### Example
+
+```html
+<!-- wp:divi/dropdown {} -->
+<!-- wp:divi/text {} -->
+<p>Content inside the dropdown</p>
+<!-- /wp:divi/text -->
+<!-- /wp:divi/dropdown -->
+```
+
+---
+
+## Group / Group Carousel
+
+- **Block:** `divi/group` / `divi/group-carousel`
+- **Element:** `module`
+
+Container modules for grouping child blocks. Group Carousel turns children into a carousel slider. No content attributes — purely structural containers.
+
+### Example
+
+```html
+<!-- wp:divi/group {} -->
+<!-- wp:divi/blurb ... /-->
+<!-- wp:divi/blurb ... /-->
+<!-- /wp:divi/group -->
+```
+
+---
+
+## Comments
+
+- **Block:** `divi/comments`
+- **D4 shortcode:** `et_pb_comments`
+- **Element:** `module`
+
+Renders the WordPress comment form and comment list for the current post. No content attributes needed.
+
+### Example
+
+```html
+<!-- wp:divi/comments {} -->
+<!-- /wp:divi/comments -->
+```
+
+---
+
+## Post Title
+
+- **Block:** `divi/post-title`
+- **D4 shortcode:** `et_pb_post_title`
+- **Element:** `module`, `title`, `meta`, `featuredImage`
+
+Used in Theme Builder templates to display the current post/page title dynamically.
+
+### Example
+
+```html
+<!-- wp:divi/post-title {} -->
+<!-- /wp:divi/post-title -->
+```
+
+---
+
+## Post Content
+
+- **Block:** `divi/post-content`
+- **D4 shortcode:** `et_pb_post_content`
+- **Element:** `module`
+
+Used in Theme Builder templates to display the current post/page content dynamically.
+
+### Example
+
+```html
+<!-- wp:divi/post-content {} -->
+<!-- /wp:divi/post-content -->
+```
+
+---
+
+## Portfolio
+
+- **Block:** `divi/portfolio`
+- **D4 shortcode:** `et_pb_portfolio`
+- **Element:** `module`
+
+Displays project posts in a grid or list. Dynamic module that queries portfolio post type.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `module.advanced.postsNumber.{device}.value` | string | Number of projects |
+| `module.advanced.layout.{device}.value` | `"grid"` / `"fullwidth"` | Portfolio layout |
+| `module.advanced.includeCategories.{device}.value` | string | Comma-separated project category IDs |
+
+### Example
+
+```html
+<!-- wp:divi/portfolio {"module":{"advanced":{"postsNumber":{"desktop":{"value":"8"}},"layout":{"desktop":{"value":"grid"}}}}} -->
+<!-- /wp:divi/portfolio -->
+```
+
+---
+
+## Post Navigation
+
+- **Block:** `divi/post-nav`
+- **D4 shortcode:** `et_pb_post_nav`
+- **Element:** `module`
+
+Displays previous/next post navigation. Used in Theme Builder templates.
+
+### Example
+
+```html
+<!-- wp:divi/post-nav {} -->
+<!-- /wp:divi/post-nav -->
 ```
