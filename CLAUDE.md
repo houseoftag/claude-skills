@@ -103,3 +103,4 @@ Then restart Claude Code. It reads from the now-updated clone and re-populates t
 | railway | railway | Railway CLI command reference and deployment gotchas |
 | divi-5 | divi-5 | Divi 5 theme builder for WordPress |
 | wordpress | wordpress | WordPress frontend development via SSH/WP-CLI |
+| intelephense | intelephense | PHP LSP code intelligence via Intelephense |
