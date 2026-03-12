@@ -20,6 +20,12 @@ Module-specific properties unique to each module. For universal decoration attri
 14. [Blog](#blog)
 15. [Contact Form](#contact-form)
 16. [Fullwidth Header](#fullwidth-header)
+17. [Divider](#divider)
+18. [CTA (Call to Action)](#cta-call-to-action)
+19. [Number Counter](#number-counter)
+20. [Testimonial](#testimonial)
+21. [Pricing Tables](#pricing-tables)
+22. [Video](#video)
 
 ---
 
@@ -28,8 +34,11 @@ Module-specific properties unique to each module. For universal decoration attri
 Divi 5 uses Gutenberg blocks, NOT D4 shortcodes:
 
 ```html
-<!-- wp:divi/module-name {"attrs":{"module":{...},"element":{...}}} -->innerHTML<!-- /wp:divi/module-name -->
+<!-- wp:divi/module-name {"module":{...},"element":{...}} -->innerHTML<!-- /wp:divi/module-name -->
 ```
+
+**IMPORTANT:** The JSON goes directly in the block comment — do NOT wrap it in an `"attrs"` key.
+The WordPress block parser stores this JSON as `$block['attrs']` automatically.
 
 Top-level element keys vary per module (e.g., `module`, `button`, `title`, `content`, `image`, `icon`). Each element can contain `decoration`, `advanced`, `meta`, and `innerContent`.
 
@@ -60,7 +69,7 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 ### Example
 
 ```html
-<!-- wp:divi/section {"attrs":{"module":{"decoration":{"background":{"desktop":{"value":{"color":"#f7f7f7"}}}},"spacing":{"desktop":{"value":{"padding":{"top":"60px","bottom":"60px"}}}}},"advanced":{"type":{"desktop":{"value":"regular"}},"gutter":{"desktop":{"value":{"width":"3","makeEqual":"on"}}}}}}} -->
+<!-- wp:divi/section {"module":{"decoration":{"background":{"desktop":{"value":{"color":"#f7f7f7"}}},"spacing":{"desktop":{"value":{"padding":{"top":"60px","bottom":"60px"}}}}},"advanced":{"type":{"desktop":{"value":"regular"}},"gutter":{"desktop":{"value":{"width":"3","makeEqual":"on"}}}}}} -->
 <!-- wp:divi/row ... -->...<!-- /wp:divi/row -->
 <!-- /wp:divi/section -->
 ```
@@ -82,7 +91,7 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 ### Example
 
 ```html
-<!-- wp:divi/row {"attrs":{"module":{"advanced":{"columnStructure":{"desktop":{"value":"2_4,2_4"}}},"decoration":{"sizing":{"desktop":{"value":{"width":"80%","maxWidth":"1080px"}}}}}}} -->
+<!-- wp:divi/row {"module":{"advanced":{"columnStructure":{"desktop":{"value":"2_4,2_4"}}},"decoration":{"sizing":{"desktop":{"value":{"width":"80%","maxWidth":"1080px"}}}}}} -->
 <!-- wp:divi/column ... -->...<!-- /wp:divi/column -->
 <!-- wp:divi/column ... -->...<!-- /wp:divi/column -->
 <!-- /wp:divi/row -->
@@ -105,7 +114,7 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 ### Example
 
 ```html
-<!-- wp:divi/column {"attrs":{"module":{"advanced":{"type":{"desktop":{"value":"2_4"}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}}}}}} -->
+<!-- wp:divi/column {"module":{"advanced":{"type":{"desktop":{"value":"2_4"}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}}}}}}} -->
 <!-- wp:divi/text ... -->...<!-- /wp:divi/text -->
 <!-- /wp:divi/column -->
 ```
@@ -118,11 +127,19 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 - **D4 shortcode:** `et_pb_text`
 - **Elements:** `module`, `content`
 
+### Content Approaches
+
+The Text module supports **two ways** to set content:
+
+1. **innerHTML (preferred):** Place HTML between the block tags. The module reads this via `$elements->render(['attrName' => 'content'])` which pulls innerHTML.
+2. **JSON attribute:** Set `content.innerContent.{device}.value` in the JSON. Both approaches work.
+
 ### Module-Specific Attributes
 
 | Attribute Path | Values | Description |
 |---|---|---|
-| `content.innerContent.{device}.value` | HTML string | The text/HTML content |
+| innerHTML (between block tags) | HTML string | The text/HTML content (preferred approach) |
+| `content.innerContent.{device}.value` | HTML string | Alternative: content via JSON attributes |
 | `content.decoration.bodyFont.body.font.{device}.value.*` | font properties | Body text font settings |
 | `content.decoration.bodyFont.link.font.{device}.value.*` | font properties | Link font settings |
 | `content.decoration.bodyFont.ul.font.{device}.value.*` | font properties | Unordered list font settings |
@@ -135,10 +152,18 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 | `content.decoration.headingFont.h5.font.{device}.value.*` | font properties | H5 font settings |
 | `content.decoration.headingFont.h6.font.{device}.value.*` | font properties | H6 font settings |
 
-### Example
+### Example (innerHTML approach — preferred)
 
 ```html
-<!-- wp:divi/text {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"20px"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Welcome to our site. We build <strong>beautiful</strong> websites with Divi 5.</p>"}},"decoration":{"bodyFont":{"body":{"font":{"desktop":{"value":{"size":"16px","lineHeight":"1.8","color":"#333333"}}}}},"headingFont":{"h2":{"font":{"desktop":{"value":{"size":"28px","weight":"700","color":"#2d3436"}}}}}}}}} -->
+<!-- wp:divi/text {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"20px"}}}}}}} -->
+<p>Welcome to our site. We build <strong>beautiful</strong> websites with Divi 5.</p>
+<!-- /wp:divi/text -->
+```
+
+### Example (JSON content approach)
+
+```html
+<!-- wp:divi/text {"content":{"innerContent":{"desktop":{"value":"<p>Welcome to our site. We build <strong>beautiful</strong> websites with Divi 5.</p>"}},"decoration":{"bodyFont":{"body":{"font":{"desktop":{"value":{"size":"16px","lineHeight":"1.8","color":"#333333"}}}}}}}} -->
 <!-- /wp:divi/text -->
 ```
 
@@ -160,10 +185,12 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 | `subtitle.innerContent.{device}.value` | string | Subtitle text |
 | `subtitle.decoration.font.font.{device}.value.*` | font properties | Subtitle font settings |
 
+**Note:** The heading text goes in `title.innerContent`, NOT `content.innerContent`. The module's render method uses `$elements->render(['attrName' => 'title'])`.
+
 ### Example
 
 ```html
-<!-- wp:divi/heading {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}},"title":{"innerContent":{"desktop":{"value":"Our Services"}},"decoration":{"font":{"font":{"desktop":{"value":{"headingLevel":"h2","size":"42px","weight":"700","color":"#2d3436","letterSpacing":"1px"}}}}}},"subtitle":{"innerContent":{"desktop":{"value":"What we do best"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"18px","color":"#636e72","style":["italic"]}}}}}}}} -->
+<!-- wp:divi/heading {"title":{"innerContent":{"desktop":{"value":"Our Services"}},"decoration":{"font":{"font":{"desktop":{"value":{"headingLevel":"h2","size":"42px","weight":"700","color":"#2d3436","letterSpacing":"1px"}}}}}},"subtitle":{"innerContent":{"desktop":{"value":"What we do best"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"18px","color":"#636e72","style":"italic"}}}}}}} -->
 <!-- /wp:divi/heading -->
 ```
 
@@ -182,16 +209,18 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 | `module.advanced.imageIcon.{device}.value.use` | `"icon"`, `"image"`, `"none"` | Display icon, image, or neither |
 | `module.advanced.imageIcon.{device}.value.placement` | `"top"`, `"left"` | Icon/image position relative to text |
 | `image.innerContent.{device}.value.src` | URL | Image source (when using image) |
-| `title.innerContent.{device}.value` | string | Blurb title |
+| `title.innerContent.{device}.value.text` | string | Blurb title (**must use `.text` sub-key**) |
 | `title.decoration.font.font.{device}.value.*` | font properties | Title font settings |
-| `content.innerContent.{device}.value` | HTML string | Body content |
+| `content.innerContent.{device}.value` | HTML string | Body content (plain HTML string, no `.text` needed) |
 | `icon.decoration.icon.{device}.value.color` | hex color | Icon color |
 | `icon.decoration.icon.{device}.value.size` | CSS value | Icon size |
+
+**IMPORTANT:** The blurb title value is an **object** with a `.text` key, not a plain string. The module checks `$value['text']` internally (BlurbModule.php). Using a plain string for the title will render nothing.
 
 ### Example
 
 ```html
-<!-- wp:divi/blurb {"attrs":{"module":{"advanced":{"imageIcon":{"desktop":{"value":{"use":"icon","placement":"top"}}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"30px","right":"30px","bottom":"30px","left":"30px"}}}},"background":{"desktop":{"value":{"color":"#ffffff"}}}}},"icon":{"decoration":{"icon":{"desktop":{"value":{"color":"#0984e3","size":"64px"}}}}},"title":{"innerContent":{"desktop":{"value":"Web Design"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"22px","weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>We craft responsive, modern websites tailored to your brand.</p>"}}}}} -->
+<!-- wp:divi/blurb {"module":{"advanced":{"imageIcon":{"desktop":{"value":{"use":"icon","placement":"top"}}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"30px","right":"30px","bottom":"30px","left":"30px"}}}},"background":{"desktop":{"value":{"color":"#ffffff"}}}}},"icon":{"decoration":{"icon":{"desktop":{"value":{"color":"#0984e3","size":"64px"}}}}},"title":{"innerContent":{"desktop":{"value":{"text":"Web Design"}}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"22px","weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>We craft responsive, modern websites tailored to your brand.</p>"}}}} -->
 <!-- /wp:divi/blurb -->
 ```
 
@@ -215,7 +244,7 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 ### Example
 
 ```html
-<!-- wp:divi/image {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"20px"}}}},"border":{"desktop":{"value":{"radius":{"topLeft":"8px","topRight":"8px","bottomRight":"8px","bottomLeft":"8px"}}}}}},"image":{"innerContent":{"desktop":{"value":{"src":"https://example.com/photo.jpg","alt":"Team photo at the office"}}},"advanced":{"lightbox":{"desktop":{"value":"on"}}}}}} -->
+<!-- wp:divi/image {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"20px"}}}},"border":{"desktop":{"value":{"radius":{"topLeft":"8px","topRight":"8px","bottomRight":"8px","bottomLeft":"8px"}}}}}},"image":{"innerContent":{"desktop":{"value":{"src":"https://example.com/photo.jpg","alt":"Team photo at the office"}}},"advanced":{"lightbox":{"desktop":{"value":"on"}}}}} -->
 <!-- /wp:divi/image -->
 ```
 
@@ -234,6 +263,7 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 | `button.innerContent.{device}.value.text` | string | Button label |
 | `button.innerContent.{device}.value.linkUrl` | URL | Button link |
 | `button.innerContent.{device}.value.linkTarget` | `"_blank"` / `""` | Open in new tab or same window |
+| `button.innerContent.{device}.value.rel` | string | Link rel attribute |
 | `button.decoration.button.{device}.value.enable` | `"on"` / `"off"` | Enable custom button styling |
 | `button.decoration.button.{device}.value.icon.enable` | `"on"` / `"off"` | Show button icon |
 | `button.decoration.button.{device}.value.icon.settings` | icon identifier | Icon unicode or identifier |
@@ -242,12 +272,14 @@ The `{device}` placeholder represents responsive breakpoints: `desktop`, `tablet
 | `button.decoration.button.{device}.value.icon.onHover` | `"on"` / `"off"` | Show icon only on hover |
 | `button.decoration.button.{device}.value.alignment` | `"left"`, `"center"`, `"right"` | Button alignment |
 
+**IMPORTANT:** The button value is an **object** with `text`, `linkUrl`, `linkTarget`, and `rel` keys — NOT a plain string. The module reads `$attrs['button']['innerContent']['desktop']['value']['text']` and `['linkUrl']` (ButtonModule.php:138-139).
+
 The `button` element also supports its own `decoration` properties for font, spacing, border, and background (independent of the module-level decoration).
 
 ### Example
 
 ```html
-<!-- wp:divi/button {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"top":"20px"}}}}}},"button":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"https://example.com/signup","linkTarget":"_blank"}}},"decoration":{"button":{"desktop":{"value":{"enable":"on","alignment":"center","icon":{"enable":"on","placement":"right","onHover":"on","color":"#ffffff"}}}},"background":{"desktop":{"value":{"color":"#0984e3"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff","size":"16px","weight":"600"}}}},"spacing":{"desktop":{"value":{"padding":{"top":"12px","right":"32px","bottom":"12px","left":"32px"}}}},"border":{"desktop":{"value":{"radius":{"topLeft":"4px","topRight":"4px","bottomRight":"4px","bottomLeft":"4px"}}}}}}}} -->
+<!-- wp:divi/button {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"top":"20px"}}}}}},"button":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"https://example.com/signup","linkTarget":"_blank"}}},"decoration":{"button":{"desktop":{"value":{"enable":"on","alignment":"center","icon":{"enable":"on","placement":"right","onHover":"on","color":"#ffffff"}}}},"background":{"desktop":{"value":{"color":"#0984e3"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff","size":"16px","weight":"600"}}}},"spacing":{"desktop":{"value":{"padding":{"top":"12px","right":"32px","bottom":"12px","left":"32px"}}}},"border":{"desktop":{"value":{"radius":{"topLeft":"4px","topRight":"4px","bottomRight":"4px","bottomLeft":"4px"}}}}}}} -->
 <!-- /wp:divi/button -->
 ```
 
@@ -271,7 +303,7 @@ The `button` element also supports its own `decoration` properties for font, spa
 ### Example
 
 ```html
-<!-- wp:divi/icon {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"15px"}}}}}},"icon":{"innerContent":{"desktop":{"value":"&#xe090;"}},"decoration":{"icon":{"desktop":{"value":{"color":"#e17055","size":"48px","useSize":"on"}}}}}}} -->
+<!-- wp:divi/icon {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"15px"}}}}}},"icon":{"innerContent":{"desktop":{"value":"&#xe090;"}},"decoration":{"icon":{"desktop":{"value":{"color":"#e17055","size":"48px","useSize":"on"}}}}}} -->
 <!-- /wp:divi/icon -->
 ```
 
@@ -292,15 +324,24 @@ The `button` element also supports its own `decoration` properties for font, spa
 | `module.advanced.autoPlay.{device}.value` | `"on"` / `"off"` | Auto-advance slides |
 | `module.advanced.autoPlaySpeed.{device}.value` | string (ms) | Auto-play interval in milliseconds |
 
-Each `divi/slide` child block has its own heading, content/description, button, and background elements.
+### Slide Child Block (`divi/slide`)
+
+Each `divi/slide` child block has its own elements:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Slide heading text |
+| `content.innerContent.{device}.value` | HTML string | Slide description |
+| `button.innerContent.{device}.value.text` | string | Slide button label |
+| `button.innerContent.{device}.value.linkUrl` | URL | Slide button link |
 
 ### Example
 
 ```html
-<!-- wp:divi/slider {"attrs":{"module":{"advanced":{"showArrows":{"desktop":{"value":"on"}},"showPagination":{"desktop":{"value":"on"}},"autoPlay":{"desktop":{"value":"on"}},"autoPlaySpeed":{"desktop":{"value":"5000"}}}}}} -->
-<!-- wp:divi/slide {"attrs":{"title":{"innerContent":{"desktop":{"value":"Welcome to Our Agency"}}},"content":{"innerContent":{"desktop":{"value":"<p>We create digital experiences that matter.</p>"}}},"button":{"innerContent":{"desktop":{"value":{"text":"Learn More","linkUrl":"/about"}}}},"module":{"decoration":{"background":{"desktop":{"value":{"color":"#2d3436"}}}}}}} -->
+<!-- wp:divi/slider {"module":{"advanced":{"showArrows":{"desktop":{"value":"on"}},"showPagination":{"desktop":{"value":"on"}},"autoPlay":{"desktop":{"value":"on"}},"autoPlaySpeed":{"desktop":{"value":"5000"}}}}} -->
+<!-- wp:divi/slide {"title":{"innerContent":{"desktop":{"value":"Welcome to Our Agency"}}},"content":{"innerContent":{"desktop":{"value":"<p>We create digital experiences that matter.</p>"}}},"button":{"innerContent":{"desktop":{"value":{"text":"Learn More","linkUrl":"/about"}}}},"module":{"decoration":{"background":{"desktop":{"value":{"color":"#2d3436"}}}}}} -->
 <!-- /wp:divi/slide -->
-<!-- wp:divi/slide {"attrs":{"title":{"innerContent":{"desktop":{"value":"Our Portfolio"}}},"content":{"innerContent":{"desktop":{"value":"<p>Browse our latest work.</p>"}}},"module":{"decoration":{"background":{"desktop":{"value":{"color":"#0984e3"}}}}}}} -->
+<!-- wp:divi/slide {"title":{"innerContent":{"desktop":{"value":"Our Portfolio"}}},"content":{"innerContent":{"desktop":{"value":"<p>Browse our latest work.</p>"}}},"module":{"decoration":{"background":{"desktop":{"value":{"color":"#0984e3"}}}}}} -->
 <!-- /wp:divi/slide -->
 <!-- /wp:divi/slider -->
 ```
@@ -320,15 +361,22 @@ Each `divi/slide` child block has its own heading, content/description, button, 
 | `title.decoration.font.font.{device}.value.headingLevel` | `"h1"` through `"h6"` | Heading level for toggle titles |
 | `closedToggleIcon.decoration.icon.{device}.value.*` | icon properties | Closed state icon (color, size) |
 
-Contains `divi/accordion-item` child blocks, each with their own `title` and `content` elements.
+### Accordion Item Child Block (`divi/accordion-item`)
+
+Each `divi/accordion-item` has:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Item title text |
+| `content.innerContent.{device}.value` | HTML string | Item body content |
 
 ### Example
 
 ```html
-<!-- wp:divi/accordion {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}},"title":{"decoration":{"font":{"font":{"desktop":{"value":{"headingLevel":"h3","size":"18px","weight":"600","color":"#2d3436"}}}}}}}} -->
-<!-- wp:divi/accordion-item {"attrs":{"title":{"innerContent":{"desktop":{"value":"What services do you offer?"}}},"content":{"innerContent":{"desktop":{"value":"<p>We offer web design, development, SEO, and digital marketing services.</p>"}}}}} -->
+<!-- wp:divi/accordion {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}},"title":{"decoration":{"font":{"font":{"desktop":{"value":{"headingLevel":"h3","size":"18px","weight":"600","color":"#2d3436"}}}}}}} -->
+<!-- wp:divi/accordion-item {"title":{"innerContent":{"desktop":{"value":"What services do you offer?"}}},"content":{"innerContent":{"desktop":{"value":"<p>We offer web design, development, SEO, and digital marketing services.</p>"}}}} -->
 <!-- /wp:divi/accordion-item -->
-<!-- wp:divi/accordion-item {"attrs":{"title":{"innerContent":{"desktop":{"value":"What is your turnaround time?"}}},"content":{"innerContent":{"desktop":{"value":"<p>Most projects are completed within 4-6 weeks depending on scope.</p>"}}}}} -->
+<!-- wp:divi/accordion-item {"title":{"innerContent":{"desktop":{"value":"What is your turnaround time?"}}},"content":{"innerContent":{"desktop":{"value":"<p>Most projects are completed within 4-6 weeks depending on scope.</p>"}}}} -->
 <!-- /wp:divi/accordion-item -->
 <!-- /wp:divi/accordion -->
 ```
@@ -341,17 +389,24 @@ Contains `divi/accordion-item` child blocks, each with their own `title` and `co
 - **D4 shortcode:** `et_pb_tabs`
 - **Elements:** `module`, child `divi/tab` blocks
 
-Contains `divi/tab` child blocks, each with its own `title` and `content` elements.
+### Tab Child Block (`divi/tab`)
+
+Each `divi/tab` has:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Tab label |
+| `content.innerContent.{device}.value` | HTML string | Tab body content |
 
 ### Example
 
 ```html
-<!-- wp:divi/tabs {"attrs":{"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}}}} -->
-<!-- wp:divi/tab {"attrs":{"title":{"innerContent":{"desktop":{"value":"Overview"}}},"content":{"innerContent":{"desktop":{"value":"<p>Our company was founded in 2010 with a mission to transform digital experiences.</p>"}}}}} -->
+<!-- wp:divi/tabs {"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}}} -->
+<!-- wp:divi/tab {"title":{"innerContent":{"desktop":{"value":"Overview"}}},"content":{"innerContent":{"desktop":{"value":"<p>Our company was founded in 2010 with a mission to transform digital experiences.</p>"}}}} -->
 <!-- /wp:divi/tab -->
-<!-- wp:divi/tab {"attrs":{"title":{"innerContent":{"desktop":{"value":"Features"}}},"content":{"innerContent":{"desktop":{"value":"<p>Key features include responsive design, SEO optimization, and fast load times.</p>"}}}}} -->
+<!-- wp:divi/tab {"title":{"innerContent":{"desktop":{"value":"Features"}}},"content":{"innerContent":{"desktop":{"value":"<p>Key features include responsive design, SEO optimization, and fast load times.</p>"}}}} -->
 <!-- /wp:divi/tab -->
-<!-- wp:divi/tab {"attrs":{"title":{"innerContent":{"desktop":{"value":"Pricing"}}},"content":{"innerContent":{"desktop":{"value":"<p>Plans start at $99/month. Contact us for enterprise pricing.</p>"}}}}} -->
+<!-- wp:divi/tab {"title":{"innerContent":{"desktop":{"value":"Pricing"}}},"content":{"innerContent":{"desktop":{"value":"<p>Plans start at $99/month. Contact us for enterprise pricing.</p>"}}}} -->
 <!-- /wp:divi/tab -->
 <!-- /wp:divi/tabs -->
 ```
@@ -370,11 +425,12 @@ Contains `divi/tab` child blocks, each with its own `title` and `content` elemen
 |---|---|---|
 | `module.advanced.open.{device}.value` | `"on"` / `"off"` | Default open state |
 | `title.innerContent.{device}.value` | string | Toggle title text |
+| `content.innerContent.{device}.value` | HTML string | Toggle body content |
 
 ### Example
 
 ```html
-<!-- wp:divi/toggle {"attrs":{"module":{"advanced":{"open":{"desktop":{"value":"off"}}},"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"15px"}}}},"border":{"desktop":{"value":{"styles":{"all":{"width":"1px","style":"solid","color":"#dfe6e9"}}}}}}},"title":{"innerContent":{"desktop":{"value":"Is there a free trial?"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"18px","weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Yes, we offer a 14-day free trial with full access to all features.</p>"}}}}} -->
+<!-- wp:divi/toggle {"module":{"advanced":{"open":{"desktop":{"value":"off"}}},"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"15px"}}}},"border":{"desktop":{"value":{"styles":{"all":{"width":"1px","style":"solid","color":"#dfe6e9"}}}}}}},"title":{"innerContent":{"desktop":{"value":"Is there a free trial?"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"18px","weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Yes, we offer a 14-day free trial with full access to all features.</p>"}}}} -->
 <!-- /wp:divi/toggle -->
 ```
 
@@ -402,7 +458,7 @@ Contains `divi/tab` child blocks, each with its own `title` and `content` elemen
 ### Example
 
 ```html
-<!-- wp:divi/blog {"attrs":{"module":{"advanced":{"postsNumber":{"desktop":{"value":"6"}},"layout":{"desktop":{"value":"grid"}},"showThumbnail":{"desktop":{"value":"on"}},"showContent":{"desktop":{"value":"on"}},"showAuthor":{"desktop":{"value":"on"}},"showDate":{"desktop":{"value":"on"}},"showCategories":{"desktop":{"value":"on"}}},"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"40px"}}}}}}}} -->
+<!-- wp:divi/blog {"module":{"advanced":{"postsNumber":{"desktop":{"value":"6"}},"layout":{"desktop":{"value":"grid"}},"showThumbnail":{"desktop":{"value":"on"}},"showContent":{"desktop":{"value":"on"}},"showAuthor":{"desktop":{"value":"on"}},"showDate":{"desktop":{"value":"on"}},"showCategories":{"desktop":{"value":"on"}}},"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"40px"}}}}}}} -->
 <!-- /wp:divi/blog -->
 ```
 
@@ -412,7 +468,7 @@ Contains `divi/tab` child blocks, each with its own `title` and `content` elemen
 
 - **Block:** `divi/contact-form`
 - **D4 shortcode:** `et_pb_contact_form`
-- **Element:** `module`, child `divi/contact-field` blocks
+- **Elements:** `module`, `title`, `button`, child `divi/contact-field` blocks
 
 ### Module-Specific Attributes
 
@@ -422,17 +478,32 @@ Contains `divi/tab` child blocks, each with its own `title` and `content` elemen
 | `module.advanced.successMessage.{device}.value` | string | Message shown after successful submission |
 | `module.advanced.redirectUrl.{device}.value` | URL | Redirect URL after submission |
 
-Contains `divi/contact-field` child blocks for each form field.
+### Contact Field Child Block (`divi/contact-field`)
+
+Contact fields use the `fieldItem` element — NOT `module.advanced`:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `fieldItem.innerContent.{device}.value` | string | Field label / placeholder text |
+| `fieldItem.advanced.type.{device}.value` | `"input"`, `"email"`, `"text"` | Field input type |
+| `fieldItem.advanced.id.{device}.value` | string | Field ID (used in form submission) |
+| `fieldItem.advanced.required.{device}.value` | `"on"` / `"off"` | Whether field is required |
+| `fieldItem.advanced.allowedSymbols.{device}.value` | string | Allowed input symbols |
+| `fieldItem.advanced.maxLength.{device}.value` | string | Maximum input length |
+| `fieldItem.advanced.minLength.{device}.value` | string | Minimum input length |
+| `fieldItem.advanced.radioOptions.{device}.value` | array | Radio button options |
+| `fieldItem.advanced.checkboxOptions.{device}.value` | array | Checkbox options |
+| `fieldItem.advanced.selectOptions.{device}.value` | array | Select dropdown options |
 
 ### Example
 
 ```html
-<!-- wp:divi/contact-form {"attrs":{"module":{"advanced":{"email":{"desktop":{"value":"hello@example.com"}},"successMessage":{"desktop":{"value":"Thanks for reaching out! We'll get back to you within 24 hours."}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"40px","right":"40px","bottom":"40px","left":"40px"}}}},"background":{"desktop":{"value":{"color":"#f5f6fa"}}}}}}} -->
-<!-- wp:divi/contact-field {"attrs":{"module":{"advanced":{"fieldId":{"desktop":{"value":"name"}},"fieldTitle":{"desktop":{"value":"Name"}},"required":{"desktop":{"value":"on"}}}}}} -->
+<!-- wp:divi/contact-form {"module":{"advanced":{"email":{"desktop":{"value":"hello@example.com"}},"successMessage":{"desktop":{"value":"Thanks for reaching out!"}}},"decoration":{"spacing":{"desktop":{"value":{"padding":{"top":"40px","right":"40px","bottom":"40px","left":"40px"}}}},"background":{"desktop":{"value":{"color":"#f5f6fa"}}}}}} -->
+<!-- wp:divi/contact-field {"fieldItem":{"innerContent":{"desktop":{"value":"Name"}},"advanced":{"type":{"desktop":{"value":"input"}},"id":{"desktop":{"value":"name"}},"required":{"desktop":{"value":"on"}}}}} -->
 <!-- /wp:divi/contact-field -->
-<!-- wp:divi/contact-field {"attrs":{"module":{"advanced":{"fieldId":{"desktop":{"value":"email"}},"fieldTitle":{"desktop":{"value":"Email"}},"fieldType":{"desktop":{"value":"email"}},"required":{"desktop":{"value":"on"}}}}}} -->
+<!-- wp:divi/contact-field {"fieldItem":{"innerContent":{"desktop":{"value":"Email"}},"advanced":{"type":{"desktop":{"value":"email"}},"id":{"desktop":{"value":"email"}},"required":{"desktop":{"value":"on"}}}}} -->
 <!-- /wp:divi/contact-field -->
-<!-- wp:divi/contact-field {"attrs":{"module":{"advanced":{"fieldId":{"desktop":{"value":"message"}},"fieldTitle":{"desktop":{"value":"Message"}},"fieldType":{"desktop":{"value":"text"}},"fullWidth":{"desktop":{"value":"on"}},"required":{"desktop":{"value":"on"}}}}}} -->
+<!-- wp:divi/contact-field {"fieldItem":{"innerContent":{"desktop":{"value":"Message"}},"advanced":{"type":{"desktop":{"value":"text"}},"id":{"desktop":{"value":"message"}},"required":{"desktop":{"value":"on"}}}}} -->
 <!-- /wp:divi/contact-field -->
 <!-- /wp:divi/contact-form -->
 ```
@@ -443,29 +514,186 @@ Contains `divi/contact-field` child blocks for each form field.
 
 - **Block:** `divi/fullwidth-header`
 - **D4 shortcode:** `et_pb_fullwidth_header`
-- **Elements:** `module`, `title`, `subtitle`, `content`, `button1`, `button2`, `image`, `logo`
+- **Elements:** `module`, `title`, `subhead`, `content`, `buttonOne`, `buttonTwo`, `image`, `logo`
 
 Must be placed inside a fullwidth section (`module.advanced.type` = `"fullwidth"`).
+
+**IMPORTANT:** Element names differ from what you might expect:
+- Subtitle uses `subhead` (NOT `subtitle`)
+- Buttons use `buttonOne` / `buttonTwo` (NOT `button1` / `button2`)
 
 ### Module-Specific Attributes
 
 | Attribute Path | Values | Description |
 |---|---|---|
 | `title.innerContent.{device}.value` | string | Main heading text |
-| `subtitle.innerContent.{device}.value` | string | Subheading text |
+| `subhead.innerContent.{device}.value` | string | Subheading text |
 | `content.innerContent.{device}.value` | HTML string | Body content |
-| `button1.innerContent.{device}.value.text` | string | Primary CTA button text |
-| `button1.innerContent.{device}.value.linkUrl` | URL | Primary CTA link |
-| `button2.innerContent.{device}.value.text` | string | Secondary CTA button text |
-| `button2.innerContent.{device}.value.linkUrl` | URL | Secondary CTA link |
+| `buttonOne.innerContent.{device}.value.text` | string | Primary CTA button text |
+| `buttonOne.innerContent.{device}.value.linkUrl` | URL | Primary CTA link |
+| `buttonTwo.innerContent.{device}.value.text` | string | Secondary CTA button text |
+| `buttonTwo.innerContent.{device}.value.linkUrl` | URL | Secondary CTA link |
 | `image.innerContent.{device}.value.src` | URL | Hero image source |
+| `logo.innerContent.{device}.value.src` | URL | Logo image source |
 | `module.advanced.text.text.{device}.value.orientation` | `"left"`, `"center"`, `"right"` | Text alignment/orientation |
 
 ### Example
 
 ```html
-<!-- wp:divi/section {"attrs":{"module":{"advanced":{"type":{"desktop":{"value":"fullwidth"}}}}}} -->
-<!-- wp:divi/fullwidth-header {"attrs":{"module":{"advanced":{"text":{"text":{"desktop":{"value":{"orientation":"center"}}}}},"decoration":{"background":{"desktop":{"value":{"color":"#2d3436","image":{"src":"https://example.com/hero-bg.jpg","parallax":"on"}}}},"spacing":{"desktop":{"value":{"padding":{"top":"120px","bottom":"120px"}}}}}},"title":{"innerContent":{"desktop":{"value":"Build Something Amazing"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"56px","weight":"700","color":"#ffffff","letterSpacing":"2px"}}}}}},"subtitle":{"innerContent":{"desktop":{"value":"Modern web solutions for modern businesses"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"22px","color":"#b2bec3"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>From concept to launch, we bring your vision to life with cutting-edge technology and thoughtful design.</p>"}}},"button1":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"/contact"}}},"decoration":{"background":{"desktop":{"value":{"color":"#0984e3"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff"}}}}}},"button2":{"innerContent":{"desktop":{"value":{"text":"View Portfolio","linkUrl":"/portfolio"}}}},"image":{"innerContent":{"desktop":{"value":{"src":"https://example.com/hero-mockup.png"}}}}}} -->
+<!-- wp:divi/section {"module":{"advanced":{"type":{"desktop":{"value":"fullwidth"}}}}} -->
+<!-- wp:divi/fullwidth-header {"module":{"advanced":{"text":{"text":{"desktop":{"value":{"orientation":"center"}}}}},"decoration":{"background":{"desktop":{"value":{"color":"#2d3436"}}},"spacing":{"desktop":{"value":{"padding":{"top":"120px","bottom":"120px"}}}}}},"title":{"innerContent":{"desktop":{"value":"Build Something Amazing"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"56px","weight":"700","color":"#ffffff","letterSpacing":"2px"}}}}}},"subhead":{"innerContent":{"desktop":{"value":"Modern web solutions for modern businesses"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"22px","color":"#b2bec3"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>From concept to launch, we bring your vision to life.</p>"}}},"buttonOne":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"/contact"}}},"decoration":{"background":{"desktop":{"value":{"color":"#0984e3"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff"}}}}}},"buttonTwo":{"innerContent":{"desktop":{"value":{"text":"View Portfolio","linkUrl":"/portfolio"}}}}} -->
 <!-- /wp:divi/fullwidth-header -->
 <!-- /wp:divi/section -->
+```
+
+---
+
+## Divider
+
+- **Block:** `divi/divider`
+- **D4 shortcode:** `et_pb_divider`
+- **Element:** `module`
+
+### Module-Specific Attributes
+
+The divider has no content attributes — only decoration. It renders as a horizontal line.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `module.decoration.divider.{device}.value.color` | hex color | Divider line color |
+| `module.decoration.divider.{device}.value.weight` | CSS value | Divider line thickness |
+| `module.decoration.sizing.{device}.value.width` | CSS value | Divider width |
+
+### Example
+
+```html
+<!-- wp:divi/divider {"module":{"decoration":{"divider":{"desktop":{"value":{"color":"#0097CE","weight":"3px"}}},"sizing":{"desktop":{"value":{"width":"60px"}}}}}} /-->
+```
+
+---
+
+## CTA (Call to Action)
+
+- **Block:** `divi/cta`
+- **D4 shortcode:** `et_pb_cta`
+- **Elements:** `module`, `title`, `content`, `button`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | CTA heading text |
+| `content.innerContent.{device}.value` | HTML string | CTA body content |
+| `button.innerContent.{device}.value.text` | string | Button label |
+| `button.innerContent.{device}.value.linkUrl` | URL | Button link |
+
+### Example
+
+```html
+<!-- wp:divi/cta {"module":{"decoration":{"background":{"desktop":{"value":{"color":"#2d3436"}}},"spacing":{"desktop":{"value":{"padding":{"top":"60px","bottom":"60px"}}}}}},"title":{"innerContent":{"desktop":{"value":"Ready to Get Started?"}},"decoration":{"font":{"font":{"desktop":{"value":{"color":"#ffffff","size":"36px","weight":"700"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Contact us today for a free consultation.</p>"}}},"button":{"innerContent":{"desktop":{"value":{"text":"Contact Us","linkUrl":"/contact"}}},"decoration":{"background":{"desktop":{"value":{"color":"#0984e3"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff"}}}}}}} -->
+<!-- /wp:divi/cta -->
+```
+
+---
+
+## Number Counter
+
+- **Block:** `divi/number-counter`
+- **D4 shortcode:** `et_pb_number_counter`
+- **Elements:** `module`, `title`, `number`
+
+The number value is animated client-side via JavaScript. It renders as a data attribute, not static text.
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Counter label text |
+| `number.innerContent.{device}.value` | string (number) | Target number for animation |
+| `number.advanced.enablePercentSign.{device}.value` | `"on"` / `"off"` | Show percent sign after number |
+
+### Example
+
+```html
+<!-- wp:divi/number-counter {"title":{"innerContent":{"desktop":{"value":"Projects Completed"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"18px","color":"#636e72"}}}}}},"number":{"innerContent":{"desktop":{"value":"500"}},"advanced":{"enablePercentSign":{"desktop":{"value":"off"}}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"48px","weight":"700","color":"#2d3436"}}}}}}} -->
+<!-- /wp:divi/number-counter -->
+```
+
+---
+
+## Testimonial
+
+- **Block:** `divi/testimonial`
+- **D4 shortcode:** `et_pb_testimonial`
+- **Elements:** `module`, `author`, `jobTitle`, `company`, `content`, `portrait`, `quoteIcon`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `author.innerContent.{device}.value` | string | Author name |
+| `jobTitle.innerContent.{device}.value` | string | Author job title / position |
+| `company.innerContent.{device}.value` | string | Author company name |
+| `content.innerContent.{device}.value` | HTML string | Testimonial body text |
+| `portrait.innerContent.{device}.value.src` | URL | Author portrait image |
+
+### Example
+
+```html
+<!-- wp:divi/testimonial {"module":{"decoration":{"background":{"desktop":{"value":{"color":"#f5f6fa"}}},"border":{"desktop":{"value":{"radius":{"topLeft":"8px","topRight":"8px","bottomRight":"8px","bottomLeft":"8px"}}}}}},"author":{"innerContent":{"desktop":{"value":"John Doe"}},"decoration":{"font":{"font":{"desktop":{"value":{"weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Excellent service and outstanding results. Highly recommended!</p>"}}},"company":{"innerContent":{"desktop":{"value":"CEO, Acme Corp"}}}} -->
+<!-- /wp:divi/testimonial -->
+```
+
+---
+
+## Pricing Tables
+
+- **Block:** `divi/pricing-tables` (container)
+- **D4 shortcode:** `et_pb_pricing_tables`
+- **Child block:** `divi/pricing-table` (individual table)
+
+### Pricing Table Item Elements
+
+Each `divi/pricing-table` child block uses:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Plan name |
+| `subtitle.innerContent.{device}.value` | string | Plan description |
+| `price.innerContent.{device}.value` | string | Price amount |
+| `currencyFrequency.innerContent.{device}.value.currency` | string | Currency symbol (e.g., `"$"`, `"USD"`) |
+| `currencyFrequency.innerContent.{device}.value.per` | string | Billing period (e.g., `"month"`, `"year"`) |
+| `content.innerContent.{device}.value` | HTML string | Features list (typically `<ul><li>` items) |
+| `button.innerContent.{device}.value.text` | string | CTA button label |
+| `button.innerContent.{device}.value.linkUrl` | URL | CTA button link |
+| `excluded.innerContent.{device}.value` | HTML string | Excluded features list |
+
+### Example
+
+```html
+<!-- wp:divi/pricing-tables {} -->
+<!-- wp:divi/pricing-table {"title":{"innerContent":{"desktop":{"value":"Basic"}}},"subtitle":{"innerContent":{"desktop":{"value":"For individuals"}}},"price":{"innerContent":{"desktop":{"value":"29"}}},"currencyFrequency":{"innerContent":{"desktop":{"value":{"currency":"$","per":"month"}}}},"content":{"innerContent":{"desktop":{"value":"<ul><li>10 Projects</li><li>5GB Storage</li><li>Email Support</li></ul>"}}},"button":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"/signup"}}}}} -->
+<!-- /wp:divi/pricing-table -->
+<!-- /wp:divi/pricing-tables -->
+```
+
+---
+
+## Video
+
+- **Block:** `divi/video`
+- **D4 shortcode:** `et_pb_video`
+- **Elements:** `module`, `video`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `video.innerContent.{device}.value.src` | URL | Video URL (YouTube, Vimeo, or direct MP4/WebM) |
+
+### Example
+
+```html
+<!-- wp:divi/video {"video":{"innerContent":{"desktop":{"value":{"src":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}}},"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}}} -->
+<!-- /wp:divi/video -->
 ```

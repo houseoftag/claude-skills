@@ -223,14 +223,14 @@ A minimal but complete page with a section, row, column, heading, and button:
 <!-- wp:divi/row {} -->
 <!-- wp:divi/column {} -->
 
-<!-- wp:divi/heading {"content":{"innerContent":{"desktop":{"value":"Welcome to Our Site"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"48px","weight":"bold","color":"#333333"}},"phone":{"value":{"size":"28px"}}}}}}} -->
+<!-- wp:divi/heading {"title":{"innerContent":{"desktop":{"value":"Welcome to Our Site"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"48px","weight":"bold","color":"#333333"}},"phone":{"value":{"size":"28px"}}}}}}} -->
 <!-- /wp:divi/heading -->
 
 <!-- wp:divi/text {"module":{"advanced":{"text":{"text":{"desktop":{"value":{"color":"light"}}}}}}} -->
 <p>This is body text that appears below the heading.</p>
 <!-- /wp:divi/text -->
 
-<!-- wp:divi/button {"button":{"innerContent":{"desktop":{"value":"Get Started"}},"decoration":{"background":{"desktop":{"value":{"color":"#2ea3f2"},"value__hover":{"color":"#1a8cd8"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff","size":"16px"}}}}}}} /-->
+<!-- wp:divi/button {"button":{"innerContent":{"desktop":{"value":{"text":"Get Started","linkUrl":"/signup"}}},"decoration":{"background":{"desktop":{"value":{"color":"#2ea3f2"},"value__hover":{"color":"#1a8cd8"}}},"font":{"font":{"desktop":{"value":{"color":"#ffffff","size":"16px"}}}}}}} /-->
 
 <!-- /wp:divi/column -->
 <!-- /wp:divi/row -->
