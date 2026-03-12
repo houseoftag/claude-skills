@@ -49,6 +49,20 @@ Module-specific properties unique to each module. For universal decoration attri
 43. [Post Content](#post-content)
 44. [Portfolio](#portfolio)
 45. [Post Navigation](#post-navigation)
+46. [Map](#map)
+47. [Lottie](#lottie)
+48. [Filterable Portfolio](#filterable-portfolio)
+49. [Post Slider](#post-slider)
+50. [Video Slider](#video-slider)
+51. [Fullwidth Image](#fullwidth-image)
+52. [Fullwidth Code](#fullwidth-code)
+53. [Fullwidth Map](#fullwidth-map)
+54. [Fullwidth Slider](#fullwidth-slider)
+55. [Fullwidth Menu](#fullwidth-menu)
+56. [Fullwidth Portfolio](#fullwidth-portfolio)
+57. [Fullwidth Post Slider](#fullwidth-post-slider)
+58. [Fullwidth Post Title](#fullwidth-post-title)
+59. [Fullwidth Post Content](#fullwidth-post-content)
 
 ---
 
@@ -965,17 +979,16 @@ Renders WordPress search form. Minimal configuration needed.
 - **D4 shortcode:** `et_pb_code`
 - **Elements:** `module`, `content`
 
-Outputs raw HTML/CSS/JavaScript. Content goes in innerHTML between block tags. Use this only when no native Divi module can achieve the desired result.
+Outputs raw HTML/CSS/JavaScript. Content uses `content.innerContent` (NOT innerHTML between block tags). Use this only when no native Divi module can achieve the desired result.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `content.innerContent.{device}.value` | HTML string | The raw code content |
 
 ### Example
 
 ```html
-<!-- wp:divi/code {} -->
-<div class="custom-embed">
-  <iframe src="https://example.com/embed" width="100%" height="400"></iframe>
-</div>
-<!-- /wp:divi/code -->
-```
+<!-- wp:divi/code {"content":{"innerContent":{"desktop":{"value":"<div class=\"custom-embed\"><iframe src=\"https://example.com/embed\" width=\"100%\" height=\"400\"></iframe></div>"}}}} /-->
 
 ---
 
@@ -1216,4 +1229,344 @@ Displays previous/next post navigation. Used in Theme Builder templates.
 ```html
 <!-- wp:divi/post-nav {} -->
 <!-- /wp:divi/post-nav -->
+```
+
+---
+
+## Map
+
+- **Block:** `divi/map`
+- **D4 shortcode:** `et_pb_map`
+- **Elements:** `module`, `map`
+
+Displays a Google Map with optional pins. Has child modules (Map Pins).
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `map.innerContent.{device}.value.zoom` | string | Zoom level |
+| `map.innerContent.{device}.value.lat` | string | Center latitude |
+| `map.innerContent.{device}.value.lng` | string | Center longitude |
+| `map.advanced.mouseWheel.{device}.value` | `"on"` / `"off"` | Mouse wheel zoom |
+| `map.advanced.mobileDragging.{device}.value` | `"on"` / `"off"` | Mobile dragging |
+| `map.advanced.grayscaleFilter.{device}.value.enabled` | `"on"` / `"off"` | Grayscale toggle |
+| `map.advanced.grayscaleFilter.{device}.value.amount` | string | Grayscale amount |
+
+### Map Pin (Child Module)
+
+- **Block:** `divi/map-pin`
+- **Elements:** `module`, `title`, `pin`, `content`
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Pin title text |
+| `pin.innerContent.{device}.value.lat` | string | Pin latitude |
+| `pin.innerContent.{device}.value.lng` | string | Pin longitude |
+| `content.innerContent.{device}.value` | HTML string | Pin popup content |
+
+### Example
+
+```html
+<!-- wp:divi/map {"map":{"innerContent":{"desktop":{"value":{"zoom":"12","lat":"40.7128","lng":"-74.0060"}}}}} -->
+<!-- wp:divi/map-pin {"title":{"innerContent":{"desktop":{"value":"New York City"}}},"pin":{"innerContent":{"desktop":{"value":{"lat":"40.7128","lng":"-74.0060"}}}}} /-->
+<!-- /wp:divi/map -->
+```
+
+---
+
+## Lottie
+
+- **Block:** `divi/lottie`
+- **D4 shortcode:** N/A (new in Divi 5)
+- **Elements:** `module`, `lottie`
+
+Displays a Lottie animation. Self-closing module.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `lottie.innerContent.{device}.value.src` | URL string | Animation JSON file URL |
+| `lottie.innerContent.{device}.value.trigger` | `"onLoad"` / `"onScroll"` / `"onClick"` / `"onHover"` | Animation trigger |
+| `lottie.innerContent.{device}.value.loop` | `"on"` / `"off"` | Loop animation |
+| `lottie.innerContent.{device}.value.speed` | string | Playback speed (e.g. `"1"`) |
+| `lottie.innerContent.{device}.value.direction` | `"forward"` / `"reverse"` | Animation direction |
+| `lottie.innerContent.{device}.value.mode` | `"normal"` / `"bounce"` | Playback mode |
+
+### Example
+
+```html
+<!-- wp:divi/lottie {"lottie":{"innerContent":{"desktop":{"value":{"src":"https://example.com/animation.json","trigger":"onLoad","loop":"on","speed":"1","direction":"forward","mode":"normal"}}}}} /-->
+```
+
+---
+
+## Filterable Portfolio
+
+- **Block:** `divi/filterable-portfolio`
+- **D4 shortcode:** `et_pb_filterable_portfolio`
+- **Elements:** `module`, `portfolio`, `portfolioGrid`, `image`, `title`, `filter`, `meta`, `pagination`, `portfolioItem`, `overlay`
+
+Displays project posts in a filterable grid with category tabs. Dynamic module that queries `project` post type.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `portfolio.advanced.showTitle.{device}.value` | `"on"` / `"off"` | Show project titles |
+| `portfolio.advanced.showCategories.{device}.value` | `"on"` / `"off"` | Show category filters |
+| `portfolio.advanced.showPagination.{device}.value` | `"on"` / `"off"` | Show pagination |
+| `portfolio.advanced.postsNumber.{device}.value` | string | Number of projects |
+| `portfolio.advanced.includedCategories.{device}.value` | array | Project category term IDs |
+| `portfolioGrid.decoration.layout.{device}.value` | layout object | Grid layout settings |
+
+### Example
+
+```html
+<!-- wp:divi/filterable-portfolio {"portfolio":{"advanced":{"postsNumber":{"desktop":{"value":"8"}},"showTitle":{"desktop":{"value":"on"}},"showCategories":{"desktop":{"value":"on"}},"showPagination":{"desktop":{"value":"on"}}}}} -->
+<!-- /wp:divi/filterable-portfolio -->
+```
+
+---
+
+## Post Slider
+
+- **Block:** `divi/post-slider`
+- **D4 shortcode:** `et_pb_post_slider`
+- **Elements:** `module`, `post`, `arrows`, `pagination`, `image`, `title`, `meta`, `button`, `content`, `slideOverlay`, `contentOverlay`
+
+Displays blog posts as a slider. Dynamic module.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `post.advanced.number.{device}.value` | string | Number of posts |
+| `post.advanced.categories.{device}.value` | array | Category filter |
+| `post.advanced.orderby.{device}.value` | `"date_desc"` / `"date_asc"` / `"title_asc"` / `"title_desc"` / `"rand"` | Sort order |
+| `post.advanced.offset.{device}.value` | string | Post offset |
+| `post.advanced.contentSource.{device}.value` | `"excerpt"` / `"full"` | Content source |
+| `post.advanced.excerptLength.{device}.value` | string | Excerpt word count |
+| `image.advanced.enable.{device}.value` | `"on"` / `"off"` | Show featured image |
+| `image.advanced.placement.{device}.value` | `"background"` / `"left"` / `"right"` / `"bottom"` | Image placement |
+| `meta.advanced.enable.{device}.value` | `"on"` / `"off"` | Show metadata |
+| `button.advanced.enable.{device}.value` | `"on"` / `"off"` | Show Read More button |
+| `module.advanced.auto.{device}.value` | `"on"` / `"off"` | Autoplay |
+| `module.advanced.autoSpeed.{device}.value` | string | Autoplay speed (ms) |
+| `slideOverlay.advanced.use.{device}.value` | `"on"` / `"off"` | Background overlay |
+| `contentOverlay.advanced.use.{device}.value` | `"on"` / `"off"` | Text content overlay |
+
+### Example
+
+```html
+<!-- wp:divi/post-slider {"post":{"advanced":{"number":{"desktop":{"value":"5"}},"contentSource":{"desktop":{"value":"excerpt"}}}},"module":{"advanced":{"auto":{"desktop":{"value":"on"}},"autoSpeed":{"desktop":{"value":"5000"}}}}} -->
+<!-- /wp:divi/post-slider -->
+```
+
+---
+
+## Video Slider
+
+- **Block:** `divi/video-slider`
+- **D4 shortcode:** `et_pb_video_slider`
+- **Elements:** `module`, `video`, `overlay`, `playIcon`, `sliderControls`
+
+Displays videos in a slider. Has child modules (Video Slider Items).
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `sliderControls.advanced.useArrows.{device}.value` | `"on"` / `"off"` | Show arrows |
+| `sliderControls.advanced.useThumbnails.{device}.value` | `"on"` / `"off"` | Show thumbnails |
+| `sliderControls.advanced.color.{device}.value` | string | Controls color theme |
+
+### Video Slider Item (Child Module)
+
+- **Block:** `divi/video-slider-item`
+- **Elements:** `module`, `video`, `thumbnail`, `playIcon`
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `video.innerContent.{device}.value.src` | URL string | Video MP4 URL |
+| `video.innerContent.{device}.value.webm` | URL string | Video WebM URL |
+| `thumbnail.innerContent.{device}.value.src` | URL string | Custom thumbnail image |
+
+### Example
+
+```html
+<!-- wp:divi/video-slider {} -->
+<!-- wp:divi/video-slider-item {"video":{"innerContent":{"desktop":{"value":{"src":"https://example.com/video.mp4"}}}}} /-->
+<!-- wp:divi/video-slider-item {"video":{"innerContent":{"desktop":{"value":{"src":"https://example.com/video2.mp4"}}}},"thumbnail":{"innerContent":{"desktop":{"value":{"src":"https://example.com/thumb2.jpg"}}}}} /-->
+<!-- /wp:divi/video-slider -->
+```
+
+---
+
+## Fullwidth Image
+
+- **Block:** `divi/fullwidth-image`
+- **D4 shortcode:** `et_pb_fullwidth_image`
+- **Elements:** `module`, `image`
+
+Same attribute paths as [Image](#image). Renders at full container width.
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-image {"image":{"innerContent":{"desktop":{"value":{"src":"https://example.com/banner.jpg","alt":"Banner"}}}}} /-->
+```
+
+---
+
+## Fullwidth Code
+
+- **Block:** `divi/fullwidth-code`
+- **D4 shortcode:** `et_pb_fullwidth_code`
+- **Elements:** `module`, `content`
+
+Same attribute paths as [Code](#code). Content uses `content.innerContent` (NOT innerHTML).
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-code {"content":{"innerContent":{"desktop":{"value":"<div>Custom embed content</div>"}}}} /-->
+```
+
+---
+
+## Fullwidth Map
+
+- **Block:** `divi/fullwidth-map`
+- **D4 shortcode:** `et_pb_fullwidth_map`
+- **Elements:** `module`, `map`
+
+Same attribute paths as [Map](#map). Renders at full container width.
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-map {"map":{"innerContent":{"desktop":{"value":{"zoom":"10","lat":"40.7128","lng":"-74.0060"}}}}} -->
+<!-- wp:divi/map-pin {"title":{"innerContent":{"desktop":{"value":"NYC"}}},"pin":{"innerContent":{"desktop":{"value":{"lat":"40.7128","lng":"-74.0060"}}}}} /-->
+<!-- /wp:divi/fullwidth-map -->
+```
+
+---
+
+## Fullwidth Slider
+
+- **Block:** `divi/fullwidth-slider`
+- **D4 shortcode:** `et_pb_fullwidth_slider`
+- **Elements:** `module`, `arrows`, `pagination`, `image`
+
+Same attribute paths as [Slider](#slider). Contains child Slide modules.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `arrows.advanced.show.{device}.value` | `"on"` / `"off"` | Show arrows |
+| `pagination.advanced.show.{device}.value` | `"on"` / `"off"` | Show dots |
+| `module.advanced.auto.{device}.value` | `"on"` / `"off"` | Autoplay |
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-slider {} -->
+<!-- wp:divi/slide {"title":{"innerContent":{"desktop":{"value":"Slide Title"}}},"content":{"innerContent":{"desktop":{"value":"<p>Slide content</p>"}}}} --><!-- /wp:divi/slide -->
+<!-- /wp:divi/fullwidth-slider -->
+```
+
+---
+
+## Fullwidth Menu
+
+- **Block:** `divi/fullwidth-menu`
+- **D4 shortcode:** `et_pb_fullwidth_menu`
+- **Elements:** `module`, `logo`, `menu`, `menuDropdown`, `cartIcon`, `searchIcon`, `hamburgerMenuIcon`
+
+Same attribute paths as [Menu](#menu). Renders at full container width.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `logo.innerContent.{device}.value.src` | URL string | Logo image URL |
+| `menu.advanced.style.{device}.value` | string | Menu style |
+| `menu.advanced.fullwidth.{device}.value` | `"on"` / `"off"` | Fullwidth toggle |
+| `menuDropdown.advanced.animation.{device}.value` | string | Dropdown animation |
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-menu {"logo":{"innerContent":{"desktop":{"value":{"src":"https://example.com/logo.png"}}}}} -->
+<!-- /wp:divi/fullwidth-menu -->
+```
+
+---
+
+## Fullwidth Portfolio
+
+- **Block:** `divi/fullwidth-portfolio`
+- **D4 shortcode:** `et_pb_fullwidth_portfolio`
+- **Elements:** `module`, `portfolio`, `portfolioGrid`, `image`, `title`, `meta`, `overlay`
+
+Same attribute paths as [Portfolio](#portfolio). Displays projects at full width.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `portfolio.advanced.showTitle.{device}.value` | `"on"` / `"off"` | Show titles |
+| `portfolio.advanced.showDate.{device}.value` | `"on"` / `"off"` | Show dates |
+| `portfolio.advanced.postsNumber.{device}.value` | string | Number of projects |
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-portfolio {"portfolio":{"advanced":{"postsNumber":{"desktop":{"value":"8"}},"showTitle":{"desktop":{"value":"on"}}}}} -->
+<!-- /wp:divi/fullwidth-portfolio -->
+```
+
+---
+
+## Fullwidth Post Slider
+
+- **Block:** `divi/fullwidth-post-slider`
+- **D4 shortcode:** `et_pb_fullwidth_post_slider`
+- **Elements:** `module`, `post`, `arrows`, `pagination`, `image`, `title`, `meta`, `button`, `content`, `slideOverlay`, `contentOverlay`
+
+Same attribute paths as [Post Slider](#post-slider). Renders at full width.
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-post-slider {"post":{"advanced":{"number":{"desktop":{"value":"5"}},"contentSource":{"desktop":{"value":"excerpt"}}}}} -->
+<!-- /wp:divi/fullwidth-post-slider -->
+```
+
+---
+
+## Fullwidth Post Title
+
+- **Block:** `divi/fullwidth-post-title`
+- **D4 shortcode:** `et_pb_fullwidth_post_title`
+- **Elements:** `module`, `title`, `meta`, `featuredImage`, `textWrapper`, `content`
+
+Same attribute paths as [Post Title](#post-title). Renders at full width. Used in Theme Builder templates.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `featuredImage.advanced.placement.{device}.value` | string | Image placement |
+| `featuredImage.advanced.enabled.{device}.value` | `"on"` / `"off"` | Show featured image |
+| `featuredImage.advanced.forceFullwidth.{device}.value` | `"on"` / `"off"` | Force fullwidth image |
+| `textWrapper.advanced.useBackground.{device}.value` | `"on"` / `"off"` | Text background |
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-post-title {"featuredImage":{"advanced":{"enabled":{"desktop":{"value":"on"}},"placement":{"desktop":{"value":"background"}}}}} -->
+<!-- /wp:divi/fullwidth-post-title -->
+```
+
+---
+
+## Fullwidth Post Content
+
+- **Block:** `divi/fullwidth-post-content`
+- **D4 shortcode:** `et_pb_fullwidth_post_content`
+- **Elements:** `module`, `image`
+
+Same attribute paths as [Post Content](#post-content). Renders at full width. Used in Theme Builder templates.
+
+### Example
+
+```html
+<!-- wp:divi/fullwidth-post-content {} -->
+<!-- /wp:divi/fullwidth-post-content -->
 ```
