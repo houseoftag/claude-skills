@@ -101,3 +101,5 @@ Then restart Claude Code. It reads from the now-updated clone and re-populates t
 | scrapling | scrapling | Web scraping, website cloning, asset extraction with Scrapling |
 | payload | payload, payload-railway-deploy | Payload CMS development + Railway deployment |
 | railway | railway | Railway CLI command reference and deployment gotchas |
+| divi-5 | divi-5 | Divi 5 theme builder for WordPress |
+| wordpress | wordpress | WordPress frontend development via SSH/WP-CLI |

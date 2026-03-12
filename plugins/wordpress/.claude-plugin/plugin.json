@@ -1,0 +1,9 @@
+{
+  "name": "wordpress",
+  "version": "2026.3.0",
+  "description": "Use when building or modifying WordPress sites via SSH and WP-CLI. Triggers on: WordPress theme customization, custom CSS, child themes, wp-cli commands, enqueue scripts, wp_enqueue_style, add_action, add_filter, functions.php, style.css, frontend styling, WordPress hooks, WordPress PHP templates, header.php, footer.php, page templates. Also use when troubleshooting CSS conflicts with WordPress admin, admin toolbar styling issues, or frontend changes bleeding into wp-admin.",
+  "author": {
+    "name": "Tag Vinzant"
+  },
+  "keywords": ["wordpress"]
+}

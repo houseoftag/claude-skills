@@ -26,6 +26,20 @@
       "version": "2026.3.1",
       "source": "./plugins/railway",
       "category": "development"
+    },
+    {
+      "name": "divi-5",
+      "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API.",
+      "version": "2026.3.0",
+      "source": "./plugins/divi-5",
+      "category": "development"
+    },
+    {
+      "name": "wordpress",
+      "description": "Use when building or modifying WordPress sites via SSH and WP-CLI. Triggers on: WordPress theme customization, custom CSS, child themes, wp-cli commands, enqueue scripts, wp_enqueue_style, add_action, add_filter, functions.php, style.css, frontend styling, WordPress hooks, WordPress PHP templates, header.php, footer.php, page templates. Also use when troubleshooting CSS conflicts with WordPress admin, admin toolbar styling issues, or frontend changes bleeding into wp-admin.",
+      "version": "2026.3.0",
+      "source": "./plugins/wordpress",
+      "category": "development"
     }
   ]
 }

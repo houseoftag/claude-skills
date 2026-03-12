@@ -1,0 +1,9 @@
+{
+  "name": "divi-5",
+  "version": "2026.3.0",
+  "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API.",
+  "author": {
+    "name": "Tag Vinzant"
+  },
+  "keywords": ["divi-5"]
+}
