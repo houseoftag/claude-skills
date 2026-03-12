@@ -26,6 +26,15 @@ Module-specific properties unique to each module. For universal decoration attri
 20. [Testimonial](#testimonial)
 21. [Pricing Tables](#pricing-tables)
 22. [Video](#video)
+23. [Team Member](#team-member)
+24. [Social Media Follow](#social-media-follow)
+25. [Bar Counters](#bar-counters)
+26. [Circle Counter](#circle-counter)
+27. [Countdown Timer](#countdown-timer)
+28. [Icon List](#icon-list)
+29. [Audio](#audio)
+30. [Login](#login)
+31. [Search](#search)
 
 ---
 
@@ -696,4 +705,216 @@ Each `divi/pricing-table` child block uses:
 ```html
 <!-- wp:divi/video {"video":{"innerContent":{"desktop":{"value":{"src":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}}}},"module":{"decoration":{"spacing":{"desktop":{"value":{"margin":{"bottom":"30px"}}}}}}} -->
 <!-- /wp:divi/video -->
+```
+
+---
+
+## Team Member
+
+- **Block:** `divi/team-member`
+- **D4 shortcode:** `et_pb_team_member`
+- **Elements:** `module`, `name`, `position`, `content`, `image`, `social`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `name.innerContent.{device}.value` | string | Team member name |
+| `position.innerContent.{device}.value` | string | Job title / position |
+| `content.innerContent.{device}.value` | HTML string | Bio / description |
+| `image.innerContent.{device}.value.url` | URL | Portrait image (**uses `.url` not `.src`**) |
+
+### Example
+
+```html
+<!-- wp:divi/team-member {"name":{"innerContent":{"desktop":{"value":"Jane Smith"}},"decoration":{"font":{"font":{"desktop":{"value":{"size":"22px","weight":"700","color":"#2d3436"}}}}}},"position":{"innerContent":{"desktop":{"value":"Chief Executive Officer"}}},"content":{"innerContent":{"desktop":{"value":"<p>Jane brings 15 years of industry leadership.</p>"}}},"image":{"innerContent":{"desktop":{"value":{"url":"https://example.com/jane.jpg"}}}}} -->
+<!-- /wp:divi/team-member -->
+```
+
+---
+
+## Social Media Follow
+
+- **Block:** `divi/social-media-follow` (container)
+- **D4 shortcode:** `et_pb_social_media_follow`
+- **Child block:** `divi/social-media-follow-network`
+
+### Social Media Follow Network Elements
+
+Each `divi/social-media-follow-network` child block uses `socialNetwork`:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `socialNetwork.innerContent.{device}.value.title` | string | Network name (e.g., `"facebook"`, `"twitter"`, `"linkedin"`, `"instagram"`) |
+| `socialNetwork.innerContent.{device}.value.link` | URL | Profile URL |
+| `socialNetwork.innerContent.{device}.value.label` | string | Display label |
+
+### Example
+
+```html
+<!-- wp:divi/social-media-follow {} -->
+<!-- wp:divi/social-media-follow-network {"socialNetwork":{"innerContent":{"desktop":{"value":{"title":"facebook","link":"https://facebook.com/example","label":"Facebook"}}}}} -->
+<!-- /wp:divi/social-media-follow-network -->
+<!-- wp:divi/social-media-follow-network {"socialNetwork":{"innerContent":{"desktop":{"value":{"title":"linkedin","link":"https://linkedin.com/company/example","label":"LinkedIn"}}}}} -->
+<!-- /wp:divi/social-media-follow-network -->
+<!-- /wp:divi/social-media-follow -->
+```
+
+---
+
+## Bar Counters
+
+- **Block:** `divi/counters` (container)
+- **D4 shortcode:** `et_pb_counters`
+- **Child block:** `divi/counter`
+
+### Bar Counter Item Elements
+
+Each `divi/counter` child block uses:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Bar label text |
+| `barProgress.innerContent.{device}.value` | string (number) | Percentage value (0-100) |
+
+### Example
+
+```html
+<!-- wp:divi/counters {} -->
+<!-- wp:divi/counter {"title":{"innerContent":{"desktop":{"value":"Web Design"}}},"barProgress":{"innerContent":{"desktop":{"value":"90"}}}} -->
+<!-- /wp:divi/counter -->
+<!-- wp:divi/counter {"title":{"innerContent":{"desktop":{"value":"Development"}}},"barProgress":{"innerContent":{"desktop":{"value":"85"}}}} -->
+<!-- /wp:divi/counter -->
+<!-- /wp:divi/counters -->
+```
+
+---
+
+## Circle Counter
+
+- **Block:** `divi/circle-counter`
+- **D4 shortcode:** `et_pb_circle_counter`
+- **Elements:** `module`, `title`, `number`, `contentContainer`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Counter label |
+| `number.innerContent.{device}.value` | string (number) | Target number (animated via JS) |
+
+### Example
+
+```html
+<!-- wp:divi/circle-counter {"title":{"innerContent":{"desktop":{"value":"Customer Satisfaction"}}},"number":{"innerContent":{"desktop":{"value":"95"}}}} -->
+<!-- /wp:divi/circle-counter -->
+```
+
+---
+
+## Countdown Timer
+
+- **Block:** `divi/countdown-timer`
+- **D4 shortcode:** `et_pb_countdown_timer`
+- **Elements:** `module`, `title`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Timer heading text |
+| `module.advanced.date.{device}.value` | string | Target date (format: `"YYYY-MM-DD HH:MM"`) |
+
+### Example
+
+```html
+<!-- wp:divi/countdown-timer {"title":{"innerContent":{"desktop":{"value":"Launch Day"}}},"module":{"advanced":{"date":{"desktop":{"value":"2027-01-01 00:00"}}}}} -->
+<!-- /wp:divi/countdown-timer -->
+```
+
+---
+
+## Icon List
+
+- **Block:** `divi/icon-list` (container)
+- **D4 shortcode:** `et_pb_icon_list` (new in D5)
+- **Child block:** `divi/icon-list-item`
+
+### Icon List Item Elements
+
+Each `divi/icon-list-item` child block uses:
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `content.innerContent.{device}.value` | string | List item text |
+| `icon.innerContent.{device}.value` | icon identifier | Item icon |
+
+### Example
+
+```html
+<!-- wp:divi/icon-list {} -->
+<!-- wp:divi/icon-list-item {"content":{"innerContent":{"desktop":{"value":"Free shipping on all orders"}}},"icon":{"innerContent":{"desktop":{"value":"&#xe090;"}}}} -->
+<!-- /wp:divi/icon-list-item -->
+<!-- wp:divi/icon-list-item {"content":{"innerContent":{"desktop":{"value":"24/7 customer support"}}},"icon":{"innerContent":{"desktop":{"value":"&#xe091;"}}}} -->
+<!-- /wp:divi/icon-list-item -->
+<!-- /wp:divi/icon-list -->
+```
+
+---
+
+## Audio
+
+- **Block:** `divi/audio`
+- **D4 shortcode:** `et_pb_audio`
+- **Elements:** `module`, `title`, `image`, `caption`, `artistName`, `albumName`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `title.innerContent.{device}.value` | string | Track title |
+| `artistName.innerContent.{device}.value` | string | Artist name |
+| `albumName.innerContent.{device}.value` | string | Album name |
+| `caption.innerContent.{device}.value` | HTML string | Track description |
+| `image.innerContent.{device}.value.src` | URL | Album art / cover image |
+
+### Example
+
+```html
+<!-- wp:divi/audio {"title":{"innerContent":{"desktop":{"value":"Track Title"}}},"artistName":{"innerContent":{"desktop":{"value":"Artist Name"}}},"albumName":{"innerContent":{"desktop":{"value":"Album Name"}}}} -->
+<!-- /wp:divi/audio -->
+```
+
+---
+
+## Login
+
+- **Block:** `divi/login`
+- **D4 shortcode:** `et_pb_login`
+- **Elements:** `module`, `title`, `content`, `button`
+
+No content attributes required — renders WordPress login form. Optional title and description.
+
+### Example
+
+```html
+<!-- wp:divi/login {"title":{"innerContent":{"desktop":{"value":"Member Login"}}},"content":{"innerContent":{"desktop":{"value":"<p>Please sign in to access your account.</p>"}}}} -->
+<!-- /wp:divi/login -->
+```
+
+---
+
+## Search
+
+- **Block:** `divi/search`
+- **D4 shortcode:** `et_pb_search`
+- **Elements:** `module`, `button`
+
+Renders WordPress search form. Minimal configuration needed.
+
+### Example
+
+```html
+<!-- wp:divi/search {} -->
+<!-- /wp:divi/search -->
 ```
