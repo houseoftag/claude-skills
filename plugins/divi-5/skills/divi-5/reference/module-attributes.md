@@ -35,6 +35,11 @@ Module-specific properties unique to each module. For universal decoration attri
 29. [Audio](#audio)
 30. [Login](#login)
 31. [Search](#search)
+32. [Before/After Image](#beforeafter-image)
+33. [Code](#code)
+34. [Gallery](#gallery)
+35. [Sidebar](#sidebar)
+36. [Menu](#menu)
 
 ---
 
@@ -917,4 +922,114 @@ Renders WordPress search form. Minimal configuration needed.
 ```html
 <!-- wp:divi/search {} -->
 <!-- /wp:divi/search -->
+```
+
+---
+
+## Before/After Image
+
+- **Block:** `divi/before-after-image`
+- **D4 shortcode:** (new in D5)
+- **Elements:** `module`, `beforeImage`, `afterImage`, `beforeLabel`, `afterLabel`, `slider`, `labels`
+
+### Module-Specific Attributes
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `beforeImage.innerContent.{device}.value.src` | URL | "Before" image URL |
+| `afterImage.innerContent.{device}.value.src` | URL | "After" image URL |
+| `beforeLabel.innerContent.{device}.value` | string | "Before" label text |
+| `afterLabel.innerContent.{device}.value` | string | "After" label text |
+
+### Example
+
+```html
+<!-- wp:divi/before-after-image {"beforeImage":{"innerContent":{"desktop":{"value":{"src":"https://example.com/before.jpg"}}}},"afterImage":{"innerContent":{"desktop":{"value":{"src":"https://example.com/after.jpg"}}}},"beforeLabel":{"innerContent":{"desktop":{"value":"Before"}}},"afterLabel":{"innerContent":{"desktop":{"value":"After"}}}} -->
+<!-- /wp:divi/before-after-image -->
+```
+
+---
+
+## Code
+
+- **Block:** `divi/code`
+- **D4 shortcode:** `et_pb_code`
+- **Elements:** `module`, `content`
+
+Outputs raw HTML/CSS/JavaScript. Content goes in innerHTML between block tags. Use this only when no native Divi module can achieve the desired result.
+
+### Example
+
+```html
+<!-- wp:divi/code {} -->
+<div class="custom-embed">
+  <iframe src="https://example.com/embed" width="100%" height="400"></iframe>
+</div>
+<!-- /wp:divi/code -->
+```
+
+---
+
+## Gallery
+
+- **Block:** `divi/gallery`
+- **D4 shortcode:** `et_pb_gallery`
+- **Elements:** `module`, `title`, `caption`, `pagination`, `item`, `image`, `overlay`, `galleryGrid`
+
+Displays WordPress media library images. Requires media IDs.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `module.advanced.galleryIds.{device}.value` | string | Comma-separated media attachment IDs |
+| `module.advanced.layout.{device}.value` | `"grid"` / `"slider"` | Gallery layout |
+| `module.advanced.postsNumber.{device}.value` | string | Number of images to show |
+
+### Example
+
+```html
+<!-- wp:divi/gallery {"module":{"advanced":{"galleryIds":{"desktop":{"value":"10,11,12,13"}},"layout":{"desktop":{"value":"grid"}},"postsNumber":{"desktop":{"value":"4"}}}}} -->
+<!-- /wp:divi/gallery -->
+```
+
+---
+
+## Sidebar
+
+- **Block:** `divi/sidebar`
+- **D4 shortcode:** `et_pb_sidebar`
+- **Elements:** `module`
+
+Renders a WordPress widget area/sidebar.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `module.advanced.area.{device}.value` | string | Widget area ID |
+
+### Example
+
+```html
+<!-- wp:divi/sidebar {"module":{"advanced":{"area":{"desktop":{"value":"sidebar-1"}}}}} -->
+<!-- /wp:divi/sidebar -->
+```
+
+---
+
+## Menu
+
+- **Block:** `divi/menu`
+- **D4 shortcode:** `et_pb_menu`
+- **Elements:** `module`
+
+Renders a WordPress navigation menu.
+
+| Attribute Path | Values | Description |
+|---|---|---|
+| `module.advanced.menuId.{device}.value` | string | WordPress menu ID |
+
+### Example
+
+```html
+<!-- wp:divi/menu {"module":{"advanced":{"menuId":{"desktop":{"value":"2"}}}}} -->
+<!-- /wp:divi/menu -->
+```
 ```
