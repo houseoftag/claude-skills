@@ -670,14 +670,14 @@ The number value is animated client-side via JavaScript. It renders as a data at
 |---|---|---|
 | `author.innerContent.{device}.value` | string | Author name |
 | `jobTitle.innerContent.{device}.value` | string | Author job title / position |
-| `company.innerContent.{device}.value` | string | Author company name |
+| `company.innerContent.{device}.value.text` | string | Author company name (object with `text` key, NOT plain string) |
 | `content.innerContent.{device}.value` | HTML string | Testimonial body text |
 | `portrait.innerContent.{device}.value.src` | URL | Author portrait image |
 
 ### Example
 
 ```html
-<!-- wp:divi/testimonial {"module":{"decoration":{"background":{"desktop":{"value":{"color":"#f5f6fa"}}},"border":{"desktop":{"value":{"radius":{"topLeft":"8px","topRight":"8px","bottomRight":"8px","bottomLeft":"8px"}}}}}},"author":{"innerContent":{"desktop":{"value":"John Doe"}},"decoration":{"font":{"font":{"desktop":{"value":{"weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Excellent service and outstanding results. Highly recommended!</p>"}}},"company":{"innerContent":{"desktop":{"value":"CEO, Acme Corp"}}}} -->
+<!-- wp:divi/testimonial {"module":{"decoration":{"background":{"desktop":{"value":{"color":"#f5f6fa"}}},"border":{"desktop":{"value":{"radius":{"topLeft":"8px","topRight":"8px","bottomRight":"8px","bottomLeft":"8px"}}}}}},"author":{"innerContent":{"desktop":{"value":"John Doe"}},"decoration":{"font":{"font":{"desktop":{"value":{"weight":"600","color":"#2d3436"}}}}}},"content":{"innerContent":{"desktop":{"value":"<p>Excellent service and outstanding results. Highly recommended!</p>"}}},"company":{"innerContent":{"desktop":{"value":{"text":"CEO, Acme Corp"}}}}} -->
 <!-- /wp:divi/testimonial -->
 ```
 
