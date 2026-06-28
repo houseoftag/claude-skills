@@ -16,7 +16,7 @@
     {
       "name": "payload",
       "description": "Payload CMS: collections, fields, hooks, access control, queries, database adapters, and Railway deployment",
-      "version": "2026.3.1",
+      "version": "2026.6.1",
       "source": "./plugins/payload",
       "category": "development"
     },

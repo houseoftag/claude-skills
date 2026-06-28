@@ -404,3 +404,91 @@ npm run backup:db
 ```
 
 Prerequisite: You need a backup workflow set up with `backup:db` and `restore:db` npm scripts, and a `reimport-media` script that does direct database inserts (see "Bulk Media Import" section above).
+
+## Migration Recreate `INSERT…SELECT` Bug (SQLite / drizzle)
+
+### The Problem
+
+`payload migrate:create` generates a migration that fails on apply with
+`SQLITE_ERROR: no such column: <newcol>`.
+
+### Why It Happens
+
+SQLite can't always `ALTER TABLE ADD COLUMN` in place (mid-table position, new
+constraints, the drafts `_status` column, etc.), so drizzle **recreates** the table — but
+the generated copy `SELECT`s the **new** columns from the **old** table, which doesn't have
+them yet:
+
+```sql
+CREATE TABLE `__new_events` (… , `category`, … , `_status` text DEFAULT 'draft');
+INSERT INTO `__new_events`("id", …, "category", …, "_status")
+  SELECT          "id", …, "category", …, "_status" FROM `events`;   -- ❌ old table lacks these
+DROP TABLE `events`;
+ALTER TABLE `__new_events` RENAME TO `events`;
+```
+
+### The Fix
+
+Strip the not-yet-existing columns from **both** the insert-column-list and the SELECT-list
+of every recreate `INSERT…SELECT`. They're nullable/defaulted, so omitting them lets them
+take their default. Determine "new" reliably by introspecting a DB with the *prior*
+migrations applied (the original tables survive a mid-migration failure) and keeping only
+columns that exist there:
+
+```js
+// for each `INSERT INTO __new_X(...) SELECT ... FROM X`, drop any column not in old X:
+const have = new Set(db.prepare(`PRAGMA table_info(\`${X}\`)`).all().map(c => c.name))
+line = line.replace(/, "([a-z0-9_]+)"/g, (m, c) => have.has(c) ? m : '')
+```
+
+Always **test on a throwaway DB** (`DATABASE_URI=file:/tmp/test.db payload migrate`) before
+applying to a real one.
+
+## `migrate:create` Is Interactive — Drive It via a PTY in Headless/CI
+
+drizzle-kit prompts "*Is column X created or renamed from another column?*" on stdin, with
+no `--yes`. When nothing is actually renamed, the default (first option) is always correct —
+but you must press Enter for each. Piping bytes doesn't work (it needs a TTY); allocate a
+PTY and send `\r` on each prompt:
+
+```python
+import os, pty, select
+pid, fd = pty.fork()
+if pid == 0: os.execvpe('node_modules/.bin/payload', ['payload','migrate:create','my_change'], os.environ)
+while True:
+    r,_,_ = select.select([fd], [], [], 0.5)
+    if r:
+        data = os.read(fd, 4096)
+        if not data: break
+        os.write(1, data)
+        if b'created or renamed' in data or b'deleted or renamed' in data: os.write(fd, b'\r')
+    else: os.write(fd, b'\r')   # nudge when idle at a prompt
+```
+
+## Enabling Drafts on a Collection That Already Has Data
+
+Adding `versions.drafts` to a populated collection adds `_status` (default `'draft'`) +
+`_<collection>_v` version tables. Existing rows become **draft → hidden** on the public site
+(the `draft: false` fetch returns published only). Make the migration self-contained by
+backfilling at the **end of `up()`**:
+
+```ts
+await db.run(sql`UPDATE \`events\` SET \`_status\` = 'published' WHERE \`_status\` IS NULL OR \`_status\` != 'published';`)
+// no-op on a fresh deploy (no rows). Repeat per collection.
+```
+
+(See also "Reserved Field Names with Drafts Enabled" above — don't name a field `status`.)
+
+## Squashing Divergent Migration Chains After a Merge
+
+Two branches that each ran `migrate:create` produce chains whose `.json` snapshots diverge.
+**Don't interleave them by timestamp** — it corrupts the schema and breaks future
+`migrate:create` (which diffs against the latest snapshot). To integrate: merge the
+**code**, delete the divergent post-`initial` migrations, then regenerate **one** migration
+from the `initial` baseline. A squash *from initial* is purely additive (no dropped
+columns), which conveniently sidesteps the recreate `INSERT…SELECT` bug for the new fields.
+Verify by applying to a fresh DB, then `migrate:fresh` + reseed your dev DB.
+
+> Admin-only config (`livePreview`, `preview`, `autosave`, `defaultColumns`, RowLabel,
+> column labels) needs **no** migration — it isn't schema. See
+> [EDITOR-UX-LIVE-PREVIEW.md](EDITOR-UX-LIVE-PREVIEW.md).

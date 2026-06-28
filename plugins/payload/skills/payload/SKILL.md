@@ -1,6 +1,6 @@
 ---
 name: payload
-description: Use when working with Payload CMS projects (payload.config.ts, collections, fields, hooks, access control, Payload API). Use when debugging validation errors, security issues, relationship queries, transactions, or hook behavior. Also use for CSS conflicts between frontend and Payload admin panel, database migration safety (migrate:fresh dangers), bulk media imports, upload collection grid/folder view, disaster recovery, seed script env loading, Next.js Image component failures with Payload media, API route shadowing between frontend and Payload route groups, and media staticDir configuration.
+description: Use when working with Payload CMS projects (payload.config.ts, collections, fields, hooks, access control, Payload API). Use when debugging validation errors, security issues, relationship queries, transactions, or hook behavior. Also use for CSS conflicts between frontend and Payload admin panel, database migration safety (migrate:fresh dangers), bulk media imports, upload collection grid/folder view, disaster recovery, seed script env loading, Next.js Image component failures with Payload media, API route shadowing between frontend and Payload route groups, and media staticDir configuration. Also use for editor quality-of-life / admin-UX work: media library scannability and image pickers, reusable internal-vs-custom link fields, block layout builders and collapsed row labels, per-collection live preview and drafts/autosave, and bulk-select (hasMany) galleries — see the EDITOR-UX playbook and follow its "contribute learnings back" workflow.
 ---
 
 # Payload CMS Application Development
@@ -49,6 +49,47 @@ Payload is a Next.js native CMS with TypeScript-first architecture, providing ad
 | `<Image>` + Payload 500  | Use `<img>` tags for Payload media        | [PAYLOAD-GOTCHAS.md#nextjs-image-optimizer-fails-on-payload-media-urls](reference/PAYLOAD-GOTCHAS.md#nextjs-image-optimizer-fails-on-payload-media-urls) |
 | API routes shadow Payload | Don't overlap `(frontend)/api/` paths    | [PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes](reference/PAYLOAD-GOTCHAS.md#frontend-api-routes-shadow-payload-api-routes) |
 | Media files 404           | Set `staticDir` to absolute path         | [PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths](reference/PAYLOAD-GOTCHAS.md#media-staticdir-use-explicit-paths) |
+| Editor-friendly media     | `useAsTitle`+`imageSizes`+`listSearchableFields` | [EDITOR-UX-MEDIA.md](reference/EDITOR-UX-MEDIA.md) |
+| "Choose existing" breaks  | DON'T override media list with a grid component | [EDITOR-UX-MEDIA.md](reference/EDITOR-UX-MEDIA.md) |
+| Bulk-select a gallery     | `upload` with `hasMany`, not an array     | [EDITOR-UX-MEDIA.md](reference/EDITOR-UX-MEDIA.md) |
+| Internal-or-custom link   | Reusable `linkField()` + `resolveLinks()` | [EDITOR-UX-LINK-FIELD.md](reference/EDITOR-UX-LINK-FIELD.md) |
+| Readable block layout     | Per-block `admin.components.Label` (NOT field RowLabel) | [EDITOR-UX-LAYOUT-BUILDER.md](reference/EDITOR-UX-LAYOUT-BUILDER.md) |
+| "Add section" thumbnails  | Block `imageURL` authored at 3:2          | [EDITOR-UX-LAYOUT-BUILDER.md](reference/EDITOR-UX-LAYOUT-BUILDER.md) |
+| Per-collection live preview | `collectionLivePreview()` + draft-mode route | [EDITOR-UX-LIVE-PREVIEW.md](reference/EDITOR-UX-LIVE-PREVIEW.md) |
+| Preview updates as you type | `versions.drafts.autosave.interval`     | [EDITOR-UX-LIVE-PREVIEW.md](reference/EDITOR-UX-LIVE-PREVIEW.md) |
+| Migration "no such column" | drizzle recreate `INSERT…SELECT` bug     | [PAYLOAD-GOTCHAS.md#migration-recreate-insertselect-bug-sqlite--drizzle](reference/PAYLOAD-GOTCHAS.md) |
+| `migrate:create` in CI    | Drive the prompts via a PTY               | [PAYLOAD-GOTCHAS.md#migratecreate-is-interactive--drive-it-via-a-pty-in-headlessci](reference/PAYLOAD-GOTCHAS.md) |
+
+## Editor UX & Quality-of-Life (read first for QoL requests)
+
+Payload doesn't give you a *good editor experience* by default. The
+**[EDITOR-UX.md](reference/EDITOR-UX.md)** playbook is the canonical, cross-project set of
+patterns for making a Payload admin pleasant for non-technical editors (media pickers,
+link pickers, scannable block layouts, live preview, drafts). Topic docs:
+[media & uploads](reference/EDITOR-UX-MEDIA.md) ·
+[reusable link field](reference/EDITOR-UX-LINK-FIELD.md) ·
+[block layout builder](reference/EDITOR-UX-LAYOUT-BUILDER.md) ·
+[live preview & drafts](reference/EDITOR-UX-LIVE-PREVIEW.md).
+
+### Workflow: when asked for a QoL/editor-UX improvement to a Payload site
+
+This applies to any request to improve the backend/editing experience in a way that could
+generalize to other Payload projects (media handling, field pickers, the admin editing
+interface, live preview, etc.).
+
+1. **Check the playbook FIRST.** Read the relevant `EDITOR-UX*.md` (and
+   `PAYLOAD-GOTCHAS.md`) above before implementing. If there's existing guidance, **follow
+   it** — or **improve it** if you've found something better.
+2. **Contribute learnings back.** After implementing, fold what you learned into these docs
+   (new pattern, sharper gotcha, better code) so every project benefits. **You may commit
+   and push these skill/playbook updates without asking the user** — the marketplace's
+   pre-commit hook auto-bumps the CalVer version. (First clone on a machine:
+   `git config core.hooksPath .githooks`.)
+3. **Version both sides for drift detection.** The playbook is versioned by the plugin's
+   CalVer (auto). In the *project*, record which version you implemented against in
+   `.claude/payload-skill-version` (e.g. `payload@2026.6.7`). On the next QoL request,
+   compare the project's pin against the installed plugin version — if the playbook has
+   advanced, surface the diff and offer to bring the project up to the current playbook.
 
 ## Database Adapter: Default to SQLite
 
@@ -398,7 +439,12 @@ import type { Post, User } from '@/payload-types'
 - **[ADAPTERS.md](reference/ADAPTERS.md)** - Database, storage, email adapters, transactions
 - **[ADVANCED.md](reference/ADVANCED.md)** - Authentication, jobs, endpoints, components, plugins, localization
 - **[PLUGIN-DEVELOPMENT.md](reference/PLUGIN-DEVELOPMENT.md)** - Plugin architecture, monorepo structure, patterns, best practices
-- **[PAYLOAD-GOTCHAS.md](reference/PAYLOAD-GOTCHAS.md)** - CSS isolation, build stripping bug, migration safety, bulk media import, folders feature, disaster recovery
+- **[PAYLOAD-GOTCHAS.md](reference/PAYLOAD-GOTCHAS.md)** - CSS isolation, build stripping bug, migration safety + recreate INSERT/SELECT bug + headless migrate:create + drafts-on-existing-data + squashing chains, bulk media import, folders feature, disaster recovery
+- **[EDITOR-UX.md](reference/EDITOR-UX.md)** - Editor-UX playbook: principles, index, per-project quick-start checklist
+- **[EDITOR-UX-MEDIA.md](reference/EDITOR-UX-MEDIA.md)** - Scannable media library, the picker-drawer-vs-custom-grid gotcha, galleries as `upload hasMany`
+- **[EDITOR-UX-LINK-FIELD.md](reference/EDITOR-UX-LINK-FIELD.md)** - Reusable polymorphic `linkField()` + `resolveLinks()` Layer-2 normalizer + newTab
+- **[EDITOR-UX-LAYOUT-BUILDER.md](reference/EDITOR-UX-LAYOUT-BUILDER.md)** - Block layout builder: per-block RowLabel, initCollapsed, 3:2 "Add section" thumbnails
+- **[EDITOR-UX-LIVE-PREVIEW.md](reference/EDITOR-UX-LIVE-PREVIEW.md)** - Per-collection live preview + drafts + autosave-as-you-type
 
 ## Resources
 
