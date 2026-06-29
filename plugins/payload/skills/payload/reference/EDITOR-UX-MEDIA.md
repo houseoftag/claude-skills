@@ -51,21 +51,66 @@ export const Media: CollectionConfig = {
   of hundreds of assets navigable.
 - **`focalPoint: true`** — auto-crops (thumbnail/card) keep the subject framed.
 
-## ⚠️ Gotcha: do NOT override the media list view with a custom grid
+## Pattern: a universal thumbnail-grid media picker
 
-It's tempting to make the media list a pretty thumbnail grid via
-`admin.components.views.list.Component`. **Don't.** In Payload 3.x that same custom
-component *also* renders inside the **"Choose from existing" picker drawer** (confirmed in
-`@payloadcms/next` `renderListView` — the drawer's `render-list` server function uses
-`collectionConfig.admin.components.views.list.Component` when no `ComponentOverride` is
-passed). A grid of `<a href>` cards then **navigates away instead of selecting**, breaking
-the picker and discarding the editor's unsaved page.
+It's tempting to make the media list a thumbnail grid via
+`admin.components.views.list.Component`. The trap: in Payload 3.x that same component *also*
+renders inside the **"Choose from existing" picker drawer** (the drawer's `render-list`
+server function uses `collectionConfig.admin.components.views.list.Component`). A **server**
+component of `<a href>` cards then **navigates away instead of selecting** — breaking the
+picker and discarding the editor's unsaved page. That's why a naive grid is wrong.
 
-The stock upload-collection **table is already a good picker**: row-click → `onSelect` in
-drawer mode, a thumbnail in the filename cell, your `defaultColumns`, search, and the
-category filter. Use it. (If you ever want a true grid *picker*, it must be a client
-component that consumes `@payloadcms/ui`'s `ListDrawer` context and calls its `onSelect` —
-not a server component with anchor links.)
+**The fix is a `'use client'` component that is *mode-aware*.** Wire it once and it becomes
+the grid in all three surfaces: the full-page library, every single-select picker (incl. the
+Lexical rich-text upload picker), and the `hasMany` multi-select picker. Verified on Payload
+**3.85.1** (twincedars `src/components/admin/MediaGridView.tsx`).
+
+```tsx
+'use client'
+import { useConfig, useListDrawerContext, useListQuery, useModal } from '@payloadcms/ui'
+
+export function MediaGridView(props: { enableRowSelections?: boolean; newDocumentURL?: string }) {
+  // data + search/filter/pagination — works in BOTH modes (this component is wrapped by
+  // ListQueryProvider either way). refineListData updates the URL on the full page and
+  // notifies the drawer (onQueryChange → refetch) inside it; new docs flow back into `data`.
+  const { data, query, handlePageChange, refineListData } = useListQuery()
+  // drawer context: {} (all undefined) on the full page, populated inside a picker drawer.
+  const { isInDrawer, onSelect, onBulkSelect, allowCreate, createNewDrawerSlug } = useListDrawerContext()
+  const { openModal } = useModal()
+
+  const multi  = isInDrawer && Boolean(props.enableRowSelections)   // hasMany picker
+  const single = isInDrawer && !multi && typeof onSelect === 'function'
+  // card click:
+  //   !isInDrawer → <a href={editURL}>            (navigate; the classic library)
+  //   single      → onSelect({ collectionSlug, doc, docID: String(doc.id) })   (Upload field closes the drawer)
+  //   multi       → toggle a LOCAL Set<id>; a "Select N" button → onBulkSelect(new Map([...ids].map(id => [id, true])))
+  // "Upload new":  full page → <a href={props.newDocumentURL}>;  drawer → openModal(createNewDrawerSlug)  (NEVER <a href>)
+}
+```
+
+### The non-obvious parts (each cost a debugging cycle)
+
+- **Overriding `views.list.Component` replaces the *whole* list body**, not a slot. The
+  default view's `SelectionProvider` + "Select N" toolbar live *inside* the view you replace,
+  so `useSelection()` is **not** guaranteed around you. **Manage multi-select with local
+  state** (a `Set<id>`, keyed by id so it survives pagination) and build the `Map<id,true>`
+  for `onBulkSelect` yourself. Don't rely on the framework's selection provider/button.
+- **Detect mode with `useListDrawerContext()`** — `ListDrawerContext` defaults to `{}`, so on
+  the full page `isInDrawer`/`onSelect` are simply `undefined` (safe to destructure). `onSelect`
+  = single-select; `enableRowSelections` (a clientProp, true only for `hasMany`) = multi-select.
+- **Don't re-fetch.** Read `useListQuery().data.docs`; drive search/category/pagination through
+  `refineListData()` / `handlePageChange()`. `mergeQuery` **replaces** `where` wholesale (pass
+  `where: {}` to clear a filter) and auto-resets to page 1 on search/where changes.
+- **In-drawer "create new"** = `openModal(createNewDrawerSlug)` (or the context's
+  `DocumentDrawerToggler`) — a stacked drawer that preserves unsaved work. Never navigate.
+- **Lexical's upload picker uses the same `ListDrawer`** (single-select), so it's covered for
+  free — no separate component.
+- **`@payloadcms/ui` must be a runtime `dependency`**, not a devDependency — a client component
+  imports it at runtime.
+
+> Prefer the stock table picker if a grid isn't worth the coupling: it already works (row-click
+> → `onSelect`, thumbnail in the filename cell, your `defaultColumns` + search + category filter).
+> The grid couples to `@payloadcms/ui` client internals, so a Payload major may need a touch-up.
 
 ## Pattern: every image field is an `upload`, never a text URL
 
@@ -134,7 +179,8 @@ const images = (gallery.images ?? [])
 - [ ] `imageSizes` (incl. a square `thumbnail`) + `adminThumbnail` + `focalPoint`.
 - [ ] `listSearchableFields` + a sidebar `category` select + `pagination.defaultLimit`.
 - [ ] A `caption` field on Media (single source for gallery captions).
-- [ ] **No** custom `views.list.Component` on Media (keep the default table picker).
+- [ ] Media list view: either the default table picker (zero-maintenance) **or** a mode-aware
+      `'use client'` grid (see "universal thumbnail-grid media picker") — never a *server*-component grid.
 - [ ] Every image field is `type: 'upload'`.
 - [ ] Galleries are `upload hasMany`, not arrays.
 - [ ] `staticDir` on a persistent volume; no content images in git/`/public`.
