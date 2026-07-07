@@ -7,6 +7,13 @@
   },
   "plugins": [
     {
+      "name": "lead-dev",
+      "description": "Act as product manager and senior tech lead — own the user experience, frontend design, and architecture; delegate backend/logic coding to the Codex plugin and decided-UI implementation to an opus subagent. Triggers on: build, implement, add, create, develop, feature, refactor, fix the bug, write tests.",
+      "version": "2026.7.0",
+      "source": "./plugins/lead-dev",
+      "category": "development"
+    },
+    {
       "name": "scrapling",
       "description": "Web scraping, website cloning, and content extraction with the Scrapling library",
       "version": "2026.3.1",
