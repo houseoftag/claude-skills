@@ -43,12 +43,18 @@ brew install gh railway
 gh auth login
 gh repo create <name> --private --source=. --push
 
-# 3. Create Railway project via dashboard
-#    railway.app -> New Project -> Deploy from GitHub
-
-# 4. Link locally
+# 3. Create Railway project + GitHub-linked service via CLI (no dashboard needed;
+#    verified on CLI 4.31). Run from the app directory — init also links it.
 railway login
-railway link
+railway init -n <project-name>
+railway add --service <service-name> --repo <user>/<repo> \
+  --variables "PAYLOAD_SECRET=$(openssl rand -hex 32)" \
+  --variables "NIXPACKS_NODE_VERSION=22"
+
+# 3b. MONOREPO ONLY (app in a subdirectory): root directory and deploy branch
+#     cannot be set by CLI. Set them via the Railway MCP agent or dashboard,
+#     then COMMIT the staged changes — see "Staged config changes" gotcha below.
+#     railway.toml must live in the service's root directory, not the repo root.
 
 # 5. Create persistent volume (MUST use CLI or dashboard, NOT railway.toml)
 railway volume add --mount-path /data
@@ -95,7 +101,68 @@ rm /tmp/media.tar.gz
 
 ---
 
+### Seed-Reproducible Variant (skip the SQL dump)
+When the site's content is fully regenerable by an idempotent seed script (dev/preview
+deployments, demo sites), skip the committed-SQL-dump pattern entirely (verified 2026-07,
+shoreshadesails.com):
+
+- **Build**: seed a throwaway sqlite DB for Next's prerender pass, then build against it.
+  `NODE_ENV=development` is required for the seed step — the sqlite adapter only runs
+  Drizzle schema push in dev mode, and there are no migrations in a push-based repo.
+  ```bash
+  # scripts/railway-build.sh
+  export DATABASE_URI="file:/tmp/build.db"
+  NODE_ENV=development npm run seed
+  npm run build
+  ```
+- **First boot**: the start script seeds the volume DB if it doesn't exist, then starts Next:
+  ```bash
+  if [ ! -f /data/app.db ]; then
+    NODE_ENV=development DATABASE_URI="file:/data/app.db" npm run seed
+  fi
+  export DATABASE_URI="file:/data/app.db"
+  exec npx next start --port "${PORT:-3000}"
+  ```
+- **Schema change procedure**: delete the volume DB and redeploy — the seed regenerates it.
+- Set the admin password via env (`PAYLOAD_ADMIN_PASSWORD`-style) so reseeds are stable.
+
+---
+
 ## 2. Railway Gotchas
+
+### Staged Config Changes Are Not Applied Until Committed
+Service config edits made via the API or the Railway MCP agent (root directory, deploy
+branch, …) are **staged**, not applied. Every deployment — including ones the agent
+triggers — keeps building the last *committed* config. Symptom: deployment info shows
+`branch: main, rootDirectory: null` no matter how many times you "set" and redeploy.
+The MCP agent's own commit tool is broken (validation error), so commit via GraphQL:
+```bash
+curl -s -X POST https://backboard.railway.com/graphql/v2 \
+  -H "Authorization: Bearer $RAILWAY_TOKEN" -H 'Content-Type: application/json' \
+  -d '{"query":"mutation($id: String!) { environmentPatchCommitStaged(environmentId: $id, commitMessage: \"apply config\") }","variables":{"id":"<ENVIRONMENT_ID>"}}'
+```
+(`RAILWAY_TOKEN` lives in `~/.railway/config.json` under `user.token`.) Committing
+staged changes auto-triggers a deployment with the new config. Setting variables via
+`railway variable set` also auto-triggers a deployment.
+
+### Private Git npm Dependencies Fail — No ssh in the Build Image
+An npm dependency resolved as `git+ssh://git@github.com/...` in package-lock fails
+`npm ci` with `ssh: not found` — the nixpacks build image has no ssh binary at all,
+so even public repos fail over ssh. Fix with git's env-based URL rewrite (no
+lockfile change needed):
+```bash
+railway variable set "GIT_CONFIG_COUNT=1" \
+  "GIT_CONFIG_KEY_0=url.https://github.com/.insteadOf" \
+  "GIT_CONFIG_VALUE_0=ssh://git@github.com/"
+```
+Public dependency repos then install anonymously. For private ones, use
+`url.https://x-access-token:<fine-grained-PAT>@github.com/.insteadOf` instead
+(mint a read-only PAT scoped to just that repo; don't park a broad PAT in Railway).
+
+### Default Builder Is Now Railpack
+Railway's default builder is Railpack, not Nixpacks. `railway.toml` with
+`builder = "nixpacks"` is still honored (verified 2026-07) — but only once the
+service's root directory actually points at the directory containing railway.toml.
 
 ### `payload-types.ts` Must Be Committed
 Normally gitignored and auto-generated. But Railway builds don't have a database connection during `npm install`/`npm run build`, so `payload generate:types` can't run. The types file must be in the repo.
@@ -122,6 +189,11 @@ const client = createClient({ url: `file:${dbPath}` })
 
 ### Next.js Won't Serve Symlinked `public/` Files
 Symlinking `public/media -> /data/media` looks correct (`ls` works, Node `fs` works) but Next.js returns 404 for all files. Next.js doesn't follow symlinks that point outside the project root.
+
+**Scope**: this only bites when the upload `staticDir` is under `public/`. If `staticDir`
+points outside `public/` (e.g. `<root>/media`), Payload serves uploads through its own
+`/api/media/file/*` route with plain `fs` reads — a symlink `media -> /data/media` works
+fine and no custom route is needed.
 
 **Solution:** Create a dynamic API route that serves files from the volume:
 ```ts

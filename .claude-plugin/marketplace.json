@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "lead-dev",
-      "description": "Act as product manager and senior tech lead — own the user experience, frontend design, and architecture; delegate backend/logic coding to the Codex plugin and decided-UI implementation to an opus subagent. Triggers on: build, implement, add, create, develop, feature, refactor, fix the bug, write tests.",
+      "description": "Act as product manager and senior tech lead \u2014 own the user experience, frontend design, and architecture; delegate backend/logic coding to the Codex plugin and decided-UI implementation to an opus subagent. Triggers on: build, implement, add, create, develop, feature, refactor, fix the bug, write tests.",
       "version": "2026.7.0",
       "source": "./plugins/lead-dev",
       "category": "development"
@@ -23,7 +23,7 @@
     {
       "name": "payload",
       "description": "Payload CMS: collections, fields, hooks, access control, queries, database adapters, and Railway deployment",
-      "version": "2026.6.2",
+      "version": "2026.7.1",
       "source": "./plugins/payload",
       "category": "development"
     },
