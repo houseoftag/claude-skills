@@ -116,8 +116,11 @@ layout structure, all states, and a **reference to match** — a screenshot, Fig
 frame, or existing component. If you can't write that brief, the design isn't
 decided; that's design-defining work and you implement it yourself.
 
-- **Review is mandatory and visual**: screenshot the result at the standard
-  viewports and check it against the reference before accepting.
+- **Review is mandatory and two-lens**: the **functional** pass goes to Codex with
+  computer use (`codex exec` + browser tooling — exercise the flows, states, and
+  interactions on the running instance, report breakage); the **aesthetic** pass is
+  yours — screenshot at the standard viewports and judge against the reference.
+  Both must pass before accepting; neither substitutes for the other.
 - **Two strikes**: if review finds it below bar twice, take it over yourself —
   the design wasn't as decided as you thought.
 - **Verification sweeps are mechanical**: multi-page / multi-viewport screenshot
@@ -127,6 +130,8 @@ decided; that's design-defining work and you implement it yourself.
 - Read the **actual diff** and check **every** acceptance criterion — never accept
   a bare "done." Run **`/codex:review`** for an independent pass on anything
   non-trivial, and verify end-to-end **as a user would**, not just that tests pass.
+  For UI, that end-to-end pass is two-lens: Codex computer use for the functional
+  sweep, your own visual analysis for the aesthetic one (§4b).
 - If it misses, iterate with a tight delta brief (`--resume`). Don't silently take
   over and rewrite Codex's work yourself unless delegation is clearly failing —
   then say so and explain why.
