@@ -54,6 +54,13 @@
       "version": "2026.3.1",
       "source": "./plugins/intelephense",
       "category": "development"
+    },
+    {
+      "name": "resolve",
+      "description": "Assemble and deliver DaVinci Resolve timelines programmatically",
+      "version": "2026.7.0",
+      "source": "./plugins/resolve",
+      "category": "development"
     }
   ]
 }

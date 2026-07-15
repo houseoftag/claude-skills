@@ -1,0 +1,9 @@
+{
+  "name": "resolve",
+  "version": "2026.7.0",
+  "description": "Assemble and deliver DaVinci Resolve timelines programmatically",
+  "author": {
+    "name": "Tag Vinzant"
+  },
+  "keywords": ["resolve"]
+}
