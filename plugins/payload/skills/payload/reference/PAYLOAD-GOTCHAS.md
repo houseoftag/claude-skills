@@ -202,6 +202,20 @@ npx payload migrate
 #    but understand this may cause issues if schema drifted
 ```
 
+### Migration Files Must Use `import type` for the Args Types
+`payload migrate --disable-transpile` executes migration files as **raw ESM** — no transpile
+step erases type-only imports. `import { MigrateUpArgs, MigrateDownArgs, sql } from
+'@payloadcms/db-sqlite'` dies at runtime with `SyntaxError: ... does not provide an export named
+'MigrateDownArgs'` (those names are types, not values). Always split:
+
+```ts
+import { sql } from '@payloadcms/db-sqlite'
+import type { MigrateDownArgs, MigrateUpArgs } from '@payloadcms/db-sqlite'
+```
+
+`migrate:create` sometimes generates the combined value-import form; fix it before committing.
+(Bitten 2026-07-29: a Vercel build running `payload migrate` failed on exactly this.)
+
 ### Dev Mode vs Migrations
 When running `npm run dev`, Payload auto-pushes schema changes without creating migrations. The DB schema and migration history get out of sync. When you later try to run migrations, Payload warns about this and may try to recreate existing tables.
 
