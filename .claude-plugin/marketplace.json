@@ -61,6 +61,13 @@
       "version": "2026.7.0",
       "source": "./plugins/resolve",
       "category": "development"
+    },
+    {
+      "name": "mattpocock-picks",
+      "description": "Curated subset of Matt Pocock's engineering skills (MIT): grilling interviews (/grill-me, /grill-with-docs), domain modelling, /handoff, /wizard, /to-questionnaire, /wait-what, /writing-for-agents, and a two-axis spec-and-standards review.",
+      "version": "2026.8.0",
+      "source": "./plugins/mattpocock-picks",
+      "category": "development"
     }
   ]
 }

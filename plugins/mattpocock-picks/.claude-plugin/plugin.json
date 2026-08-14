@@ -1,0 +1,14 @@
+{
+  "name": "mattpocock-picks",
+  "version": "2026.8.0",
+  "description": "Curated subset of Matt Pocock's engineering skills (MIT). Grilling interviews, domain modelling, handoffs, wizards, questionnaires, and two-axis review.",
+  "author": {
+    "name": "Matt Pocock"
+  },
+  "keywords": [
+    "grilling",
+    "planning",
+    "review",
+    "handoff"
+  ]
+}
