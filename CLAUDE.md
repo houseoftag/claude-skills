@@ -104,3 +104,10 @@ Then restart Claude Code. It reads from the now-updated clone and re-populates t
 | divi-5 | divi-5 | Divi 5 theme builder for WordPress |
 | wordpress | wordpress | WordPress frontend development via SSH/WP-CLI |
 | intelephense | intelephense | PHP LSP code intelligence via Intelephense |
+| lead-dev | lead-dev | PM + senior tech lead role: own UX/frontend/architecture, delegate the rest |
+| resolve | resolve | DaVinci Resolve timelines via OTIO |
+| mattpocock-picks | grill-me, grilling, grill-with-docs, domain-modeling, wait-what, handoff, writing-for-agents, wizard, to-questionnaire, spec-and-standards-review | Vendored subset of `mattpocock/skills` (MIT). See the plugin README for what was left out and why |
+
+**Vendored third-party skills.** `mattpocock-picks` is a hand-picked copy of an upstream repo, not
+original work. It does not auto-update. Refresh it by diffing against upstream and re-copying — the
+procedure and the two local edits to re-apply are in `plugins/mattpocock-picks/README.md`.
