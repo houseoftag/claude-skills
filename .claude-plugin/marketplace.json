@@ -68,6 +68,13 @@
       "version": "2026.8.0",
       "source": "./plugins/mattpocock-picks",
       "category": "development"
+    },
+    {
+      "name": "framer",
+      "description": "Use when working with a Framer site programmatically via the Framer Server API \u2014 connecting to a project, reading/writing Framer CMS collections, syncing external data in, publishing and deploying, or editing the canvas from a script. Triggers on: Framer, framer-api, Framer CMS, Framer Server API, publish the Framer site, FRAMER_API_KEY.",
+      "version": "2026.8.1",
+      "source": "./plugins/framer",
+      "category": "development"
     }
   ]
 }

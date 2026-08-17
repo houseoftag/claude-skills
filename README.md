@@ -27,6 +27,19 @@ Two skills for [Payload CMS](https://payloadcms.com) development and deployment:
 - **payload** — Collections, fields, hooks, access control, queries, database adapters, endpoints, plugin development, and common gotchas. Includes detailed reference docs for each topic.
 - **payload-railway-deploy** — Step-by-step deployment playbook for Payload CMS 3 + Next.js 15 + SQLite on [Railway](https://railway.app), covering volume setup, environment variables, media uploads, and disaster recovery.
 
+### Framer
+
+**Plugin:** `framer@tagvinzant-skills`
+
+Drive a [Framer](https://www.framer.com) site from a script through the Framer Server API
+(`framer-api`) — no browser, no open Framer window.
+
+**Covers:**
+- Connecting to a project (API key, project URL, and closing the connection on every runtime)
+- Framer CMS collections: fields, items, field-data shapes, idempotent upsert-by-slug syncs
+- Publishing a preview deployment and promoting it to production
+- Canvas editing via the `framer.agent` command DSL, project queries, branches, and screenshots
+
 ## Installation
 
 Add the marketplace to your `~/.claude/settings.json`:

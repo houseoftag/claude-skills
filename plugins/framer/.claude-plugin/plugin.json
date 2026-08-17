@@ -1,0 +1,13 @@
+{
+  "name": "framer",
+  "version": "2026.8.1",
+  "description": "Use when working with a Framer site programmatically via the Framer Server API — connecting to a project, reading/writing Framer CMS collections, syncing external data in, publishing and deploying, or editing the canvas from a script. Triggers on: Framer, framer-api, Framer CMS, Framer Server API, publish the Framer site, FRAMER_API_KEY.",
+  "author": {
+    "name": "Tag Vinzant"
+  },
+  "keywords": [
+    "framer",
+    "framer-api",
+    "cms"
+  ]
+}
