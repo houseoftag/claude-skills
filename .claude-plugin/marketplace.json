@@ -75,6 +75,13 @@
       "version": "2026.8.1",
       "source": "./plugins/framer",
       "category": "development"
+    },
+    {
+      "name": "site-clone-parity",
+      "description": "Deterministic release gate for website clones: freeze references from a source site, gate a candidate rebuild on pixels, computed styles, hidden states, links, and breakpoints with the clone-parity CLI. Triggers on: clone a site, site clone, rebuild an existing site, pixel parity, visual parity, visual regression against a reference site, clone-parity, certify the clone, does my rebuild match the original.",
+      "version": "2026.8.0",
+      "source": "./plugins/site-clone-parity",
+      "category": "development"
     }
   ]
 }
