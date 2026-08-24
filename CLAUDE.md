@@ -106,6 +106,7 @@ Then restart Claude Code. It reads from the now-updated clone and re-populates t
 | intelephense | intelephense | PHP LSP code intelligence via Intelephense |
 | lead-dev | lead-dev | PM + senior tech lead role: own UX/frontend/architecture, delegate the rest |
 | resolve | resolve | DaVinci Resolve timelines via OTIO |
+| site-clone-parity | site-clone-parity | Deterministic release gate for website clones via the clone-parity CLI |
 | mattpocock-picks | grill-me, grilling, grill-with-docs, domain-modeling, wait-what, handoff, writing-for-agents, wizard, to-questionnaire, spec-and-standards-review | Vendored subset of `mattpocock/skills` (MIT). See the plugin README for what was left out and why |
 
 **Vendored third-party skills.** `mattpocock-picks` is a hand-picked copy of an upstream repo, not

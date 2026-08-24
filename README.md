@@ -27,6 +27,21 @@ Two skills for [Payload CMS](https://payloadcms.com) development and deployment:
 - **payload** — Collections, fields, hooks, access control, queries, database adapters, endpoints, plugin development, and common gotchas. Includes detailed reference docs for each topic.
 - **payload-railway-deploy** — Step-by-step deployment playbook for Payload CMS 3 + Next.js 15 + SQLite on [Railway](https://railway.app), covering volume setup, environment variables, media uploads, and disaster recovery.
 
+### Site clone parity
+
+**Plugin:** `site-clone-parity@tagvinzant-skills`
+
+Release-gate a website clone with the [clone-parity](https://github.com/houseoftag/clone-parity) CLI:
+freeze references from the source site, then gate the rebuild on pixels, computed styles, hidden
+interaction states, internal links, and CSS breakpoints. The tool decides pass or fail, not the model.
+
+**Covers:**
+- Install and configuration, including how to serve a source site as a stable reference
+- The operating loop: capture, control, boundaries, focused gates, certify
+- Failure triage by evidence order, with a symptom table
+- State cases for menus, dialogs, forms, and other hidden behaviour, plus coverage mapping
+- Version 0.1.0 gotchas and the things you must never do
+
 ### Framer
 
 **Plugin:** `framer@tagvinzant-skills`
