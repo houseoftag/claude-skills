@@ -96,9 +96,10 @@ Spawn the worker with the `Agent` tool: `model: 'sonnet'` and the brief as the
 prompt. Always pass `model` — an omitted one inherits the coordinator's Opus. Notes:
 
 - Effort: `medium` for routine implementation, `low` for mechanical edits, `high`
-  only for the hardest work. The `Agent` tool takes no `effort` parameter (a plain
-  worker runs at the session effort), so pin it where the spawn allows: `effort`
-  in a custom agent type's frontmatter, or in a Workflow stage's `agent()` options.
+  only for the hardest work. The `Agent` tool takes no `effort` parameter. A
+  `general-purpose` worker runs at `medium` (the claude-config override); for
+  another level, set `effort` in a custom agent type's frontmatter, or in a
+  Workflow stage's `agent()` options.
 - Follow-up on the same task → `SendMessage` to that worker with the delta only.
 - Several independent pieces → spawn all workers in one message. Workers that
   write to one tree run one at a time, or each in its own worktree.

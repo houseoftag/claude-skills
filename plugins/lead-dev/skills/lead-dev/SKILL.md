@@ -92,9 +92,10 @@ Hand each task to a worker with a lean, XML-tagged brief.
 
 - **Implementation / fix / refactor / tests** → spawn a worker with the `Agent`
   tool and `model: 'sonnet'`. Pass the brief as the prompt. The `Agent` tool
-  takes no `effort` parameter — a plain worker runs at the session effort. To pin
-  one (`low` for mechanical edits), use a custom agent type with `effort` in its
-  frontmatter, or a Workflow stage with `effort` in its `agent()` options.
+  takes no `effort` parameter. A `general-purpose` worker runs at `medium` (the
+  claude-config override). For another level (`low` for mechanical edits), use a
+  custom agent type with `effort` in its frontmatter, or a Workflow stage with
+  `effort` in its `agent()` options.
 - **Independent review of a change** → spawn a fresh reviewer worker (§5).
 - **Follow-up on the same task** → `SendMessage` to that worker so it keeps its
   context; send only the delta instruction, not the whole brief again. Spawn a
