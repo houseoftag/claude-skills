@@ -10,7 +10,8 @@
    nondeterministic source content, an unstable server. Fix that before reading any candidate
    failure. A checker that fails its own control is not evidence against the clone.
 3. **Worst tile.** `inspect --report gate.json` sorts by worst tile. Open the full-resolution
-   `diff/NN.png`; the matching `reference/NN.png` and `candidate/NN.png` sit beside it.
+   `diff/NN.webp` named in the tile's `images`; the matching `reference/NN.webp` and
+   `candidate/NN.webp` sit beside it. Passing tiles have no images.
 4. **Element findings.** `elements.json` names the anchor, property, and both values — usually the
    fastest path to a fix.
 5. **State report** for anything a closed page cannot show.

@@ -77,7 +77,8 @@ how to turn a live source site into a stable local reference.
 | `control` | Reference against itself. Must be 100%. Proves the checker, not the clone. |
 | `integrity` | Route status, internal links, browser errors, outside origins. |
 | `inspect` | Print the worst findings and verify report freshness and evidence hashes. |
-| `certify` | The full release contract over the complete route inventory. |
+| `certify` | The full release contract over the complete route inventory. Deletes earlier runs first. |
+| `prune` | Keep only the newest run under `artifacts/runs/` and `reports/runs/` (`--dry-run` to preview). |
 
 Useful flags: `--config <file>`, `--route <path>` (repeatable), `--breakpoint <name>`
 (`inventory`, `integrity`), `--refresh` (capture only), `--enforce-local`, `--json`,
@@ -113,8 +114,9 @@ Cheapest to most expensive:
 
 1. Freshness. `inspect` reports a `freshness` array. A stale report proves nothing.
 2. Did `control` pass in this session? If not, stop — the harness is broken.
-3. `inspect --report gate.json` → worst tile → open
-   `.clone-parity/artifacts/visual/<route-slug>/<breakpoint>/diff/NN.png` at full size.
+3. `inspect --report gate.json` → worst tile → open the paths in its `images` field
+   (`.clone-parity/artifacts/visual/<route-slug>/<breakpoint>/diff/NN.webp`) at full size. Only
+   failing tiles get images; a passing tile has `images: null`.
 4. `elements.json` findings name the anchor, the CSS property, and both values. Act on these before
    pixels; they are far faster to read.
 5. `states.json` for anything a closed page cannot show.

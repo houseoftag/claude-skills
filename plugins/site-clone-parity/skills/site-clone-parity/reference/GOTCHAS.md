@@ -30,10 +30,11 @@ Verified against clone-parity 0.1.0 (`houseoftag/clone-parity`, first release, 2
 - **`region` is only `header`, `footer`, or `main`** (nearest `<header>`/`<footer>` ancestor). A
   visually distinct sidebar is `main`.
 - **`tileMatchThreshold` defaults to 95, which is loose.** Tighten it as the candidate converges.
-- **Artifacts grow fast.** Each gate writes the full-page reference, candidate, and diff PNGs *plus*
-  three PNGs per tile, and `certify` does two visual runs plus a control, each under
-  `.clone-parity/artifacts/runs/<run-id>/`. Nothing prunes old runs. On a large site expect
-  gigabytes; delete stale `runs/` directories between sessions, and keep `.clone-parity/` gitignored
+- **Only failures leave images.** Gates write lossless WebP reference, candidate, and diff images
+  for failing tiles and failing state checks only — no full-page copies, nothing for a pass. Each
+  gate clears its own artifact folder when it starts, so every image on disk is a current failure.
+  `certify` deletes earlier `runs/` before it starts; `prune` does the same by hand. Frozen PNG
+  references from older versions stay valid — never convert them. Keep `.clone-parity/` gitignored
   (`init` does this).
 - **`elements`, `states`, `inventory`, and `boundaries` run serially.** Only `gate` and `capture`
   use `capture.concurrency`. On a 60-route site the element gate is 240 sequential page loads —
@@ -56,7 +57,7 @@ Verified against clone-parity 0.1.0 (`houseoftag/clone-parity`, first release, 2
 - **WordPress** — analytics, chat widgets, ad slots, and lazy-load plugins make live captures
   nondeterministic. Mirror the site first, then serve the mirror.
 - **Anything behind Cloudflare** — a challenge page can be captured as the reference without any
-  error. Check the first frozen PNG by eye once, before trusting the set.
+  error. Check the first frozen reference image by eye once, before trusting the set.
 - **Shopify** — cart drawers and app embeds inject markup on load. Expect state cases, and expect
   the inventory to list app surfaces you must exclude with reasons.
 - **Hot-reload dev servers** — never the candidate. HMR clients, error overlays, and injected
