@@ -506,3 +506,85 @@ Verify by applying to a fresh DB, then `migrate:fresh` + reseed your dev DB.
 > Admin-only config (`livePreview`, `preview`, `autosave`, `defaultColumns`, RowLabel,
 > column labels) needs **no** migration — it isn't schema. See
 > [EDITOR-UX-LIVE-PREVIEW.md](EDITOR-UX-LIVE-PREVIEW.md).
+
+## Dev Schema Push Leaves a Marker That Blocks Production Boot
+
+### The Problem
+A production start (`prodMigrations` / `payload migrate`) hangs instead of booting. Under
+systemd there's no TTY, so it just sits there; run interactively, it shows an "It looks like
+you've run Payload in dev mode against this database…" `y/N` prompt, and declining exits `0`
+with the app never starting.
+
+### Why It Happens
+Running Payload in dev mode against a database — including plain `npm run dev`, `payload
+generate:*`, or tests — pushes schema changes directly (`push: true`, the Postgres adapter's
+default when no migrations dir is configured) instead of going through a migration. That push
+writes a `payload_migrations` row with `batch = -1`, which Payload reads on the next
+production boot as "this database drifted outside of migrations" and stops to ask.
+
+### The Fix
+Set `push: false` on the Postgres adapter for any environment that will ever run production
+migrations, and only change schema via `payload migrate:create` / `payload migrate`. If a
+`batch = -1` row already exists, delete it from `payload_migrations` — the schema itself is
+usually fine, only the marker needs clearing.
+
+Seen on: Payload 3.90.2, Next 16.3.
+
+## An Array Sub-Field Named `id` Becomes the Child Table's Primary Key
+
+### The Problem
+Two parent documents that both seed array rows with the same default ids (e.g. `phases[].id:
+'1'`) collide on insert — a unique-constraint violation on the array's own table, not on
+anything that looks like your field.
+
+### Why It Happens
+Naming an array row field literally `id` (e.g. `phases[].id`) makes Payload use that field as
+the array table's own primary key, which Payload enforces as a globally unique varchar across
+every parent — not scoped per-parent like Payload's own generated `id` column would be.
+
+### The Fix
+Name the field something else (`phaseId`) and map it to/from `id` in your loader or API layer
+if the public shape needs to call it `id`.
+
+Seen on: Payload 3.90.2, Next 16.3.
+
+## Cookie-Authenticated Writes 403 When the Request Origin Isn't in `csrf`
+
+### The Problem
+GET requests work fine and look fully authenticated, but every POST/PATCH from the same
+browser session comes back `req.user = null` with a generic 403 — reads like an access-control
+bug in your own code, not an auth problem.
+
+### Why It Happens
+Payload only trusts the session cookie on a request that carries an Origin header if that
+origin is listed in `config.csrf`; it auto-adds `serverURL` only. GETs still succeed because
+browsers fall back to the `Sec-Fetch-Site` header for same-site checks, but any POST/PATCH from
+an origin Payload doesn't recognize — a local port reached through a tailnet URL, Playwright
+hitting `127.0.0.1`, a preview domain — gets silently unauthenticated instead of an auth error.
+
+### The Fix
+List every origin the app is actually reached on in `csrf` (drive it from env so preview/tailnet
+hosts are included), not just the canonical `serverURL`.
+
+Seen on: Payload 3.90.2, Next 16.3.
+
+## Workspace TS Packages With `.js`-Suffixed Relative Imports Break Turbopack
+
+### The Problem
+`next build` fails with "Module not found" on a relative import that plainly exists on disk,
+inside a workspace package consumed as TypeScript source (e.g. `./foo.js` resolving to
+`foo.ts`).
+
+### Why It Happens
+`next build` in Next 16 defaults to Turbopack, which does not honor
+`webpack.resolve.extensionAlias`. A workspace TS package written with ESM-style `.js`-suffixed
+relative imports (so it also works when later compiled to real `.js`) resolves fine under
+webpack's alias but not under Turbopack, which looks for a literal `foo.js` and doesn't find
+one.
+
+### The Fix
+Either build with `next build --webpack` (and `next dev --webpack`) to keep the alias
+resolution, or drop the `.js` suffixes from those packages' relative imports so Turbopack
+resolves them directly.
+
+Seen on: Payload 3.90.2, Next 16.3.
