@@ -1,7 +1,8 @@
 # Writing a worker brief
 
 How to turn one of your decided specs into a hand-off that a Sonnet 5.5 worker
-implements faithfully on the first try. This is the implementer-facing half of the
+implements faithfully on the first try. (Visual UI code goes to an Opus 5.5 worker
+instead — same brief shape, `model: 'opus'`.) This is the implementer-facing half of the
 `lead-dev` workflow.
 
 The blocks below are XML tags. A worker starts with none of your context, so the
@@ -242,8 +243,8 @@ Summary, touched files, pasted verify output.
 | "Be very thorough, don't be lazy." | An `<acceptance_check>` the worker must run and paste. |
 | "Minimize tool calls" / "only use tools when strictly necessary". | Say nothing about tool use; the worker follows these literally. |
 | Bundling review + fix + docs + roadmap in one worker. | One job per worker; spawn separate workers. |
-| Handing over design-defining UI work. | You write the code that invents the look; delegate it once decided, with tokens, states, and a reference. |
+| Handing over design-defining UI work. | You write the code that invents the look; once decided, delegate it to an Opus worker (never Sonnet) with tokens, states, and a reference. |
 | Handing over an unresolved product/architecture question. | Decide it first; delegate the decided spec. |
 | "Make the tests pass." (invites deleting tests) | "Fix the code so the existing tests pass; do not edit tests." |
 | "Add retry, caching, and a plugin system while you're in there." | Scope fence in `<constraints>`: minimal solution, this path only. |
-| Omitting `model` on the spawn. | Always pass `model: 'sonnet'` (or `'opus'` on escalation). |
+| Omitting `model` on the spawn. | Always pass `model: 'sonnet'` (or `'opus'` for visual UI code and on escalation). |
