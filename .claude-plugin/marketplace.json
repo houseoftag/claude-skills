@@ -82,6 +82,13 @@
       "version": "2026.9.1",
       "source": "./plugins/site-clone-parity",
       "category": "development"
+    },
+    {
+      "name": "event-promo",
+      "description": "Cut a music-driven event recap or promo from raw camera and drone footage with ffmpeg (no NLE): motion-first shot selection, Gyroflow stabilization, beat-grid cutting, grade and fast noise reduction, and a QC gate. Triggers on: event recap, promo video, highlight reel, drone footage, cut to the beat, jello, rolling shutter, color flicker, S-Log3, swap the music.",
+      "version": "2026.11.0",
+      "source": "./plugins/event-promo",
+      "category": "development"
     }
   ]
 }

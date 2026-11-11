@@ -1,0 +1,9 @@
+{
+  "name": "event-promo",
+  "version": "2026.11.0",
+  "description": "Cut a music-driven event recap or promo from raw camera and drone footage with ffmpeg, no NLE: shot selection by measured motion, gyro stabilization, beat-grid cutting, grade and noise reduction, and a QC gate",
+  "author": {
+    "name": "Tag Vinzant"
+  },
+  "keywords": ["event-promo"]
+}

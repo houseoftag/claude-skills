@@ -55,6 +55,22 @@ Drive a [Framer](https://www.framer.com) site from a script through the Framer S
 - Publishing a preview deployment and promoting it to production
 - Canvas editing via the `framer.agent` command DSL, project queries, branches, and screenshots
 
+### Event promo
+
+**Plugin:** `event-promo@tagvinzant-skills`
+
+Cut a music-driven event recap or promo from raw camera and drone footage with ffmpeg and Python,
+without an NLE. Built from a real 14-round client job; every rule cost a round of notes.
+
+**Covers:**
+- Intake questions that prevent the most common notes (music, on-screen words, story emphasis, noise reduction)
+- Shot selection by measured motion first: drone "fluid move" scoring and a handheld shake gate
+- Gyroflow stabilization from camera gyro data for rolling-shutter jello and warp
+- Story structure by place and time, with an act-timing check
+- One beat grid for cuts and graphics, and a music-swap checklist
+- S-Log3 grade targets and fast noise reduction with Apple VideoToolbox
+- A QC gate and delivery report, plus standalone scripts for each check
+
 ## Installation
 
 Add the marketplace to your `~/.claude/settings.json`:
