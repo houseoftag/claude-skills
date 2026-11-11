@@ -1,0 +1,9 @@
+{
+  "name": "tstack",
+  "version": "2026.11.0",
+  "description": "Theo Browne's tstack agent skills (MIT), vendored verbatim: full-send, full-stop, council, sol-loop, file-pr, takeover, babysit-pr, modernize, leaving-pr-comments.",
+  "author": {
+    "name": "Theo Browne"
+  },
+  "keywords": ["pr", "review", "ci", "autonomy"]
+}

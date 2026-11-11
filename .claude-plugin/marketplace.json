@@ -89,6 +89,13 @@
       "version": "2026.11.0",
       "source": "./plugins/event-promo",
       "category": "development"
+    },
+    {
+      "name": "tstack",
+      "description": "Theo Browne's tstack agent skills (MIT), vendored verbatim: /full-send, /full-stop, /council, /sol-loop, /file-pr, /takeover, /babysit-pr, /modernize, and automatic leaving-pr-comments.",
+      "version": "2026.11.0",
+      "source": "./plugins/tstack",
+      "category": "development"
     }
   ]
 }
