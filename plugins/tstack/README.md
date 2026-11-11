@@ -18,13 +18,16 @@ All nine skills from [t3dotgg/tstack](https://github.com/t3dotgg/tstack), vendor
 | `modernize` | "modernize" | Rebases an old PR and decides whether it should still exist. |
 | `leaving-pr-comments` | automatic | Formats comments an agent posts on the user's behalf. |
 
-## Known conflicts with the global CLAUDE.md (open, 2026-11-10)
+## House settings (2026-11-10)
 
-Vendored unchanged on Tag's instruction; the conflicts are to be discussed before any edit:
+The skills stay unchanged. The house settings for them live in `houseoftag/claude-config`, in
+`skills/merge-gate/SKILL.md` and the "Git & deploy safety" section of the global `CLAUDE.md`:
 
-- `council` and `sol-loop` delegate review to GPT and Gemini; CLAUDE.md routes all work to Claude.
-- `full-send` merges the PR; CLAUDE.md says Tag merges.
-- `full-stop` runs `full-send`'s steps, including `sol-loop`.
+- With no trigger word, a PR merges when the merge gate passes. "full stop" prevents the merge.
+  "full send" means Tag is not watching.
+- A merge that deploys to production waits for Tag, unless he said "full send".
+- Reviewers are GPT Sol and a new Claude Opus worker. `sol-loop` runs Sol at high effort.
+- `council` has two seats, Claude Opus and GPT Sol, and no round limit. No Gemini, Grok, or Fable.
 
 ## Local changes to upstream
 
