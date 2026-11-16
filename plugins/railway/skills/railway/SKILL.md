@@ -12,7 +12,11 @@ description: >
 
 This is a rigid reference skill. Use the exact syntax documented here — Railway CLI errors are often silent or misleading when flags/subcommands are wrong.
 
-**CLI version this was verified against:** 4.31.0
+**CLI version this was verified against:** 5.74.0 (`--help` output, 2026-11-16). Older notes in this file were written against 4.31.0.
+
+**On Tag's machines, the claude-config `railway` skill is the house playbook and wins on any conflict** (tokens, the VPS segfault trap, the one-volume limit, deploy checks).
+
+**Never print variable values.** `railway variables`, `railway variable list`, `--kv`, and `--json` on a variable list all print raw secret values into the conversation. Do not run them in an agent session. To check that a variable exists, ask the user, or use a helper that prints names only. Set values with `railway variable set KEY --stdin` so the value never appears in the command line.
 
 ---
 
@@ -46,10 +50,10 @@ railway link --project <PROJECT_ID> --environment production --service backend
 # Deploy without streaming
 railway up --detach -s backend
 
-# List services (there is NO `railway service list`)
-railway service status --all --json
+# List services
+railway service list --json
 
-# Redeploy without confirmation
+# Redeploy without confirmation (redeploys the existing build; add --from-source to rebuild)
 railway service redeploy -s backend -y
 
 # SSH: run a single command (use -- before the command)
@@ -64,10 +68,10 @@ railway logs -s backend --lines 100
 | Wrong | Right | Why |
 |-------|-------|-----|
 | `railway link` | `railway link --project X --service Y --environment Z` | Bare link triggers interactive picker |
-| `railway service list` | `railway service status --all --json` | `list` subcommand doesn't exist |
 | `railway ssh command` | `railway ssh -s name -- command` | Use `--` separator for non-interactive commands |
 | `railway volume delete` | `railway volume delete -v <ID> -y` | Needs volume ID and confirmation skip |
-| `railway redeploy -y` | `railway service redeploy -s name -y` | Use `service redeploy` subcommand with `-s` |
+| `railway redeploy -y` | `railway redeploy -s name -y` or `railway service redeploy -s name -y` | Both exist in 5.74.0; always pass `-s` |
+| `railway variable list` | (do not run) | Prints raw secret values |
 
 ---
 
@@ -82,15 +86,16 @@ railway logs -s backend --lines 100
 | Generate domain | `railway domain -s <service>` |
 | Custom domain | `railway domain example.com -s <service>` |
 | Set variables | `railway variable set KEY=VALUE -s <service>` |
-| List variables | `railway variable list -s <service> --json` |
+| List variables | Do not run in an agent session: it prints raw values |
 | Add volume | `railway volume add --mount-path /data -s <service>` |
-| List services | `railway service status --all --json` |
+| List services | `railway service list --json` |
 | SSH into service | `railway ssh -s <service>` |
 | SSH run command | `railway ssh -s <service> -- <command>` |
 | Run command with env | `railway run <command>` |
 | View deploy logs | `railway logs -s <service> --lines 100` |
 | View build logs | `railway logs -s <service> --build --lines 200` |
-| Redeploy | `railway service redeploy -s <service> -y` |
+| Redeploy (same build) | `railway service redeploy -s <service> -y` |
+| Rebuild from source | `railway service redeploy -s <service> -y --from-source` |
 | Restart (no rebuild) | `railway service restart -s <service> -y` |
 | Check status | `railway status` |
 
@@ -132,11 +137,11 @@ railway ssh -s worker -e production
 railway variable set KEY=VALUE
 railway variable set KEY1=VALUE1 KEY2=VALUE2
 
-# Set from stdin (for secrets/multiline)
-echo "long-value" | railway variable set KEY --stdin
+# Set from stdin (for secrets/multiline; keeps the value out of argv)
+printf '%s' "$VALUE" | railway variable set KEY --stdin
 
-# List all variables
-railway variable list
+# Do NOT list variables in an agent session: `railway variable list`,
+# `--kv`, and `--json` all print raw secret values.
 
 # Delete a variable
 railway variable delete KEY
@@ -230,8 +235,11 @@ If your Railway project is connected to a GitHub repo, pushing to the branch tri
 ### Redeploy / Restart
 
 ```bash
-# Redeploy (full rebuild + deploy) — use `service redeploy`
+# Redeploy the existing build (no rebuild)
 railway service redeploy -s backend -y
+
+# Rebuild from the latest commit, then deploy
+railway service redeploy -s backend -y --from-source
 
 # Restart (just restart the container, no rebuild)
 railway service restart -s backend -y
@@ -306,8 +314,8 @@ railway shell
 ## Services & Environments
 
 ```bash
-# List all services (there is NO `service list` — use status --all)
-railway service status --all --json
+# List all services
+railway service list --json
 
 # Link to a specific service
 railway service link -s backend
@@ -315,7 +323,7 @@ railway service link -s backend
 # View service status
 railway service status -s backend --json
 
-# Redeploy (full rebuild + deploy, skip confirmation)
+# Redeploy the existing build, skip confirmation (add --from-source to rebuild)
 railway service redeploy -s backend -y
 
 # Restart (container restart only, no rebuild)
@@ -328,11 +336,13 @@ railway environment new staging
 railway environment delete staging
 ```
 
-**Common mistake:** `railway service list` does NOT exist. Use `railway service status --all --json`.
+Other `service` subcommands in 5.74.0: `source`, `scale`, `files`, `logs`, `delete`. Domains: `railway domain list|status|update|delete|certificate`. Volumes: `railway volume list|add|update|attach|detach|files|browse|delete`.
 
 ---
 
 ## railway.toml
+
+> **Deprecated: config-as-code (`railway.json` / `railway.toml`) stops working on 2026-12-01.** Migrate with `railway config migrate`, which writes an authoring file (`.railway/railway.ts`); preview with `railway config plan` and apply with `railway config apply`. The section below describes the old format, for reading existing projects.
 
 Controls build and deploy configuration. Place in project root.
 
