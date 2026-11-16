@@ -37,7 +37,7 @@
     {
       "name": "divi-5",
       "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API.",
-      "version": "2026.3.0",
+      "version": "2026.11.1",
       "source": "./plugins/divi-5",
       "category": "development"
     },
