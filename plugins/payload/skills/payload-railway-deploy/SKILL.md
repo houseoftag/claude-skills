@@ -44,7 +44,7 @@ gh auth login
 gh repo create <name> --private --source=. --push
 
 # 3. Create Railway project + GitHub-linked service via CLI (no dashboard needed;
-#    verified on CLI 4.31). Run from the app directory — init also links it.
+#    verified on CLI 4.31; flags still present in 5.74.0 --help). Run from the app directory — init also links it.
 railway login
 railway init -n <project-name>
 railway add --service <service-name> --repo <user>/<repo> \
@@ -138,10 +138,13 @@ triggers — keeps building the last *committed* config. Symptom: deployment inf
 The MCP agent's own commit tool is broken (validation error), so commit via GraphQL:
 ```bash
 curl -s -X POST https://backboard.railway.com/graphql/v2 \
-  -H "Authorization: Bearer $RAILWAY_TOKEN" -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $RAILWAY_API_TOKEN" -H 'Content-Type: application/json' \
   -d '{"query":"mutation($id: String!) { environmentPatchCommitStaged(environmentId: $id, commitMessage: \"apply config\") }","variables":{"id":"<ENVIRONMENT_ID>"}}'
 ```
-(`RAILWAY_TOKEN` lives in `~/.railway/config.json` under `user.token`.) Committing
+Token types: `RAILWAY_API_TOKEN` is an account or workspace token and uses `Authorization: Bearer`.
+`RAILWAY_TOKEN` is a **project** token and uses the `Project-Access-Token` header instead, not
+`Bearer`. Never read a token out of a credential file (`~/.railway/config.json`) inline in a shell
+command or print it; load it inside a helper script or from the environment. Committing
 staged changes auto-triggers a deployment with the new config. Setting variables via
 `railway variable set` also auto-triggers a deployment.
 
@@ -161,8 +164,14 @@ Public dependency repos then install anonymously. For private ones, use
 
 ### Default Builder Is Now Railpack
 Railway's default builder is Railpack, not Nixpacks. `railway.toml` with
-`builder = "nixpacks"` is still honored (verified 2026-07) — but only once the
+`builder = "nixpacks"` was honored in 2026-07 — but only once the
 service's root directory actually points at the directory containing railway.toml.
+
+> **Config-as-code ends 2026-12-01.** Railway stops reading `railway.json` / `railway.toml`
+> on 2026-12-01. Run `railway config migrate` to translate the file into an authoring file
+> (`.railway/railway.ts`), check it with `railway config plan`, then `railway config apply`.
+> Re-check every `railway.toml` step in this skill against the migrated file; the TOML in
+> section 3 is kept as the source to migrate from.
 
 ### `payload-types.ts` Must Be Committed
 Normally gitignored and auto-generated. But Railway builds don't have a database connection during `npm install`/`npm run build`, so `payload generate:types` can't run. The types file must be in the repo.
@@ -244,6 +253,10 @@ For general Railway gotchas (volumes in railway.toml, queued deploys, SSH stdin 
 ## 3. Config File Reference
 
 ### railway.toml
+
+(Deprecated 2026-12-01 — see "Config-as-code ends 2026-12-01" above. Keep this as the input to
+`railway config migrate`.)
+
 ```toml
 [build]
 builder = "nixpacks"
