@@ -69,8 +69,7 @@ Take each lane only as far as a worker needs to implement faithfully:
 - **Frontend design** — the *decisions* in this lane are yours end-to-end: tokens,
   layout, components, motion, states. Hand-write only **design-defining** code —
   where the visual language is being invented. Once a design is *decided*,
-  implementation goes to an Opus worker (§4b). (Aids: the `frontend-design` and
-  `ui-ux-pro-max` skills.) When you brief UI work, name the patterns to avoid
+  implementation goes to an Opus worker (§4b). When you brief UI work, name the patterns to avoid
   ("no cream background, no italic accent words, no pill buttons") — "avoid a
   generic AI look" just swaps one default style for another.
 - **Architecture** — define data models, interface/contract signatures (with
@@ -151,7 +150,8 @@ design isn't decided; that's design-defining work and you implement it yourself.
 
 ### Fable advisor
 For novel architecture, the hardest design or verify calls, or decisions that are
-expensive to unwind, consult Fable. Spawn an agent with `model: 'fable'` and a
+expensive to unwind, consult Fable. Spawn a read-only Fable reviewer (the user's
+`fable-review` agent type, if they have one; otherwise an agent with `model: 'fable'`) with a
 self-contained brief — the decision, the options, the constraints, the evidence —
 and ask for a **decision with reasons, not an implementation**. Or turn on
 `/advisor fable` for a session of hard design work, then off again. The test is
