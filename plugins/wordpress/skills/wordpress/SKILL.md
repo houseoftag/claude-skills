@@ -14,6 +14,9 @@ description: >
 
 This skill covers frontend WordPress development via SSH and WP-CLI. It focuses on safely building and styling the public-facing site without breaking the admin panel.
 
+- **Divi 5 page content** (layouts, modules, `wp:divi/*` blocks): use the `divi-5` skill.
+- **Where `wp` runs:** WP-CLI runs over SSH on the site's host. It is usually not installed on your local machine or build server, so run `ssh <host> 'cd <site-root> && wp ...'`.
+
 ## The #1 Rule: Protect the Admin
 
 Every CSS rule and PHP hook you write must be scoped to the frontend. Broad selectors and wrong hooks are the most common source of admin breakage.

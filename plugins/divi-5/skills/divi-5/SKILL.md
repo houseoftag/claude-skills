@@ -3,9 +3,9 @@ name: divi-5
 description: >
   Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules,
   Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS
-  customization, Divi hooks, Divi child themes, divi-5, Divi API, et_pb shortcodes, WP-CLI
-  with Divi content. Always use this skill when writing Divi shortcode content or pushing
-  Divi layouts via WP-CLI — it prevents trial-and-error with attribute names and ensures
+  customization, Divi hooks, Divi child themes, divi-5, Divi API, Divi 5 block markup
+  (`wp:divi/*`), Divi 4 `et_pb` shortcodes that need conversion, WP-CLI with Divi content.
+  Always use this skill when writing Divi 5 block content or pushing Divi layouts via WP-CLI — it prevents trial-and-error with attribute names and ensures
   output is editable in the Visual Builder.
 ---
 

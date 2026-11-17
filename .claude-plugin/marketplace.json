@@ -9,7 +9,7 @@
     {
       "name": "lead-dev",
       "description": "Act as product manager and senior tech lead \u2014 own the user experience, frontend design, and architecture; delegate logic and plumbing to Sonnet worker subagents and visual UI code to Opus workers, and review everything they return. Triggers on: build, implement, add, create, develop, feature, refactor, fix the bug, write tests.",
-      "version": "2026.10.1",
+      "version": "2026.11.1",
       "source": "./plugins/lead-dev",
       "category": "development"
     },
@@ -23,28 +23,21 @@
     {
       "name": "payload",
       "description": "Payload CMS: collections, fields, hooks, access control, queries, database adapters, and Railway deployment",
-      "version": "2026.10.1",
+      "version": "2026.11.1",
       "source": "./plugins/payload",
-      "category": "development"
-    },
-    {
-      "name": "railway",
-      "description": "Use when running Railway CLI commands, deploying to Railway, managing Railway services/volumes/variables/domains, or troubleshooting Railway deployments. Triggers on: railway, railway CLI, deploy to Railway, railway volume, railway variables, railway ssh, railway logs, railway domain.",
-      "version": "2026.3.1",
-      "source": "./plugins/railway",
       "category": "development"
     },
     {
       "name": "divi-5",
       "description": "Use when building WordPress sites with Divi 5 theme builder. Triggers on: Divi modules, Divi theme options, Divi Builder, Visual Builder, Divi layouts, Divi templates, Divi CSS customization, Divi hooks, Divi child themes, divi-5, Divi API.",
-      "version": "2026.3.0",
+      "version": "2026.11.1",
       "source": "./plugins/divi-5",
       "category": "development"
     },
     {
       "name": "wordpress",
       "description": "Use when building or modifying WordPress sites via SSH and WP-CLI. Triggers on: WordPress theme customization, custom CSS, child themes, wp-cli commands, enqueue scripts, wp_enqueue_style, add_action, add_filter, functions.php, style.css, frontend styling, WordPress hooks, WordPress PHP templates, header.php, footer.php, page templates. Also use when troubleshooting CSS conflicts with WordPress admin, admin toolbar styling issues, or frontend changes bleeding into wp-admin.",
-      "version": "2026.3.0",
+      "version": "2026.11.1",
       "source": "./plugins/wordpress",
       "category": "development"
     },
