@@ -87,7 +87,7 @@ rm -rf ~/.claude/plugins/cache/tagvinzant-skills/
 
 # 3. Clear stale commit SHAs in installed_plugins.json
 # Set each tagvinzant-skills entry's array to [] so Claude Code re-installs
-# e.g. "payload@tagvinzant-skills": [], "railway@tagvinzant-skills": []
+# e.g. "payload@tagvinzant-skills": [], "framer@tagvinzant-skills": []
 ```
 
 Then restart Claude Code. It reads from the now-updated clone and re-populates the cache.
@@ -100,7 +100,6 @@ Then restart Claude Code. It reads from the now-updated clone and re-populates t
 |--------|--------|-------------|
 | scrapling | scrapling | Web scraping, website cloning, asset extraction with Scrapling |
 | payload | payload, payload-railway-deploy | Payload CMS development + Railway deployment |
-| railway | railway | Railway CLI command reference and deployment gotchas |
 | divi-5 | divi-5 | Divi 5 theme builder for WordPress |
 | wordpress | wordpress | WordPress frontend development via SSH/WP-CLI |
 | intelephense | intelephense | PHP LSP code intelligence via Intelephense |

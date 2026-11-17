@@ -33,7 +33,7 @@ Railway Service
 
 ### Setup Steps (in order)
 
-For Railway CLI syntax details, see the **railway** skill. The commands below are the Payload-specific sequence:
+For Railway CLI syntax details, see the claude-config **railway** skill (its `reference.md`). The commands below are the Payload-specific sequence:
 
 ```bash
 # 1. Install CLIs
@@ -246,7 +246,7 @@ export async function GET(
 }
 ```
 
-For general Railway gotchas (volumes in railway.toml, queued deploys, SSH stdin limitations), see the **railway** skill.
+For general Railway gotchas (volumes in railway.toml, queued deploys, SSH stdin limitations), see the claude-config **railway** skill (its `reference.md`).
 
 ---
 
